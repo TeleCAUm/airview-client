@@ -7,6 +7,8 @@ import Three from './components/Three'
 import Four from './components/Four'
 import Multiple from './components/Four'
 import styled from 'styled-components'
+import BottomMenu from './components/BottomMenu'
+import ParticipantMenu from './components/ParticipantMenu'
 
 const Container = styled.div`
   width: 100vw;
@@ -220,8 +222,10 @@ const App = () => {
 
   console.log(users.length)
 
+  let a
+
   if (users.length === 0) {
-    return (
+    a = (
       <Container>
         <VideoContainer>
           <Video ref={localVideoRef} autoPlay></Video>
@@ -229,13 +233,13 @@ const App = () => {
       </Container>
     )
   } else if (users.length === 1) {
-    return <One user={users[0]}></One>
+    a = <One user={users[0]}></One>
   } else if (users.length === 2) {
-    return <Two userLeft={users[0]} userRight={users[1]}></Two>
+    a = <Two userLeft={users[0]} userRight={users[1]}></Two>
   } else if (users.length === 3) {
-    return <Three userLeft={users[0]} userRight={users[1]} userBottom={users[2]}></Three>
+    a = <Three userLeft={users[0]} userRight={users[1]} userBottom={users[2]}></Three>
   } else if (users.length >= 4) {
-    return (
+    a = (
       <Four
         userTopLeft={users[0]}
         userTopRight={users[1]}
@@ -245,7 +249,13 @@ const App = () => {
     )
   }
 
-  return <div></div>
+  return (
+    <div>
+      <BottomMenu></BottomMenu>
+      <ParticipantMenu></ParticipantMenu>
+      {a}
+    </div>
+  )
 }
 
 export default App
