@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
-import Video from './Components/Video'
+import Video from './components/Video'
 import { WebRTCUser } from './types'
 
 const pc_config = {
