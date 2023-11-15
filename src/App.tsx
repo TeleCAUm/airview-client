@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
-import Video from './components/Video'
 import { WebRTCUser } from './types'
+import One from './components/One'
+import Two from './components/Two'
+import Three from './components/Three'
+import Multiple from './components/Four'
 
 const pc_config = {
   iceServers: [
@@ -194,24 +197,18 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPeerConnection, getLocalStream])
 
-  return (
-    <div>
-      <video
-        style={{
-          width: 240,
-          height: 240,
-          margin: 5,
-          backgroundColor: 'black'
-        }}
-        muted
-        ref={localVideoRef}
-        autoPlay
-      />
-      {users.map((user, index) => (
-        <Video key={index} email={user.email} stream={user.stream} />
-      ))}
-    </div>
-  )
+  if (users.length === 1) {
+    return <One ref={localVideoRef}></One>
+  } else if (users.length === 2) {
+    return <Two></Two>
+  } else if (users.length === 3) {
+    return <Three></Three>
+  } else if (users.length >= 4) {
+    return <Multiple></Multiple>
+  } else {
+    console.log('no one exists')
+    return <One ref={localVideoRef}></One>
+  }
 }
 
 export default App
