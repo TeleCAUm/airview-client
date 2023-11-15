@@ -4,7 +4,31 @@ import { WebRTCUser } from './types'
 import One from './components/One'
 import Two from './components/Two'
 import Three from './components/Three'
+import Four from './components/Four'
 import Multiple from './components/Four'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-color: gray;
+
+  display: flex;
+`
+
+const VideoContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  background-color: rgb(172, 172, 172);
+
+  display: flex;
+`
+
+const Video = styled.video`
+  width: 100%;
+  object-fit: contain;
+`
 
 const pc_config = {
   iceServers: [
@@ -31,8 +55,8 @@ const App = () => {
     try {
       const localStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
-          width: 240,
-          height: 240
+          width: 1920,
+          height: 1080
         }
       })
       localStreamRef.current = localStream
@@ -96,8 +120,6 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    console.log('start')
-
     socketRef.current = io(SOCKET_SERVER_URL)
     getLocalStream()
 
@@ -184,7 +206,6 @@ const App = () => {
     })
 
     return () => {
-      console.log('end')
       if (socketRef.current) {
         socketRef.current.disconnect()
       }
@@ -197,18 +218,34 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPeerConnection, getLocalStream])
 
-  if (users.length === 1) {
-    return <One ref={localVideoRef}></One>
+  console.log(users.length)
+
+  if (users.length === 0) {
+    return (
+      <Container>
+        <VideoContainer>
+          <Video ref={localVideoRef} autoPlay></Video>
+        </VideoContainer>
+      </Container>
+    )
+  } else if (users.length === 1) {
+    return <One user={users[0]}></One>
   } else if (users.length === 2) {
-    return <Two></Two>
+    return <Two userLeft={users[0]} userRight={users[1]}></Two>
   } else if (users.length === 3) {
-    return <Three></Three>
+    return <Three userLeft={users[0]} userRight={users[1]} userBottom={users[2]}></Three>
   } else if (users.length >= 4) {
-    return <Multiple></Multiple>
-  } else {
-    console.log('no one exists')
-    return <One ref={localVideoRef}></One>
+    return (
+      <Four
+        userTopLeft={users[0]}
+        userTopRight={users[1]}
+        userBottomLeft={users[2]}
+        userBottomRight={users[3]}
+      ></Four>
+    )
   }
+
+  return <div></div>
 }
 
 export default App
