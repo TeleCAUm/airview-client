@@ -1,38 +1,38 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const BottomMenu = () => {
-  const [showBottomMenu, setShowBottomMenu] = useState(false);
+const DrawingMenu = () => {
+  const [showDrawingMenu, setShowDrawingMenu] = useState(false);
 
   document.addEventListener("mousemove", function (e) {
-    var windowHeight = window.innerHeight;
     var mouseY = e.clientY;
 
-    if (mouseY > windowHeight - 50) {
-      setShowBottomMenu(true);
+    if (mouseY < 50) {
+      setShowDrawingMenu(true);
     } else {
-      setShowBottomMenu(false);
+      setShowDrawingMenu(false);
     }
   });
 
-  if (showBottomMenu) {
+  if (showDrawingMenu) {
     return (
       <Wrapper>
-        <MenuBtn>화면 공유</MenuBtn>
-        <MenuBtn>초대</MenuBtn>
-        <MenuBtn>토글</MenuBtn>
-        <MenuBtn>나가기</MenuBtn>
+        <MenuBtn>펜</MenuBtn>
+        <MenuBtn>지우개</MenuBtn>
+        <MenuBtn>색상</MenuBtn>
+        <MenuBtn>펜 굵기</MenuBtn>
+        <MenuBtn>전체 지우기</MenuBtn>
       </Wrapper>
     );
   }
   return <HiddenWrapper>Plz be hidden</HiddenWrapper>;
 };
 
-export default BottomMenu;
+export default DrawingMenu;
 
 const HiddenWrapper = styled.div`
   position: fixed;
-  bottom: -100px;
+  top: -100px;
   width: 100%;
   transition: bottom 0.5s;
 `;
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
   position: fixed;
   width: auto;
   height: auto;
-  bottom: 0px;
+  top: 0px;
   margin: 10px;
   border-radius: 5px;
   border: none;
@@ -56,7 +56,7 @@ const Wrapper = styled.div`
 `;
 
 const MenuBtn = styled.button`
-  width: 80px;
+  width: 90px;
   height: 40px;
   border-radius: 5px;
   border: none;
