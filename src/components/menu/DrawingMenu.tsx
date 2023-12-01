@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import ColorPick from "./ColorPick";
+import { FaRegPenToSquare } from "react-icons/fa6";
+import { LuEraser } from "react-icons/lu";
+import { MdOutlineCancelPresentation } from "react-icons/md";
 
 const DrawingMenu = () => {
   const [showDrawingMenu, setShowDrawingMenu] = useState(false);
+  const [color, setColor] = useState("#FF8B8B");
 
   document.addEventListener("mousemove", function (e) {
     var mouseY = e.clientY;
@@ -17,11 +22,20 @@ const DrawingMenu = () => {
   if (showDrawingMenu) {
     return (
       <Wrapper>
-        <MenuBtn>펜</MenuBtn>
-        <MenuBtn>지우개</MenuBtn>
-        <MenuBtn>색상</MenuBtn>
-        <MenuBtn>펜 굵기</MenuBtn>
-        <MenuBtn>전체 지우기</MenuBtn>
+        <MenuBtn>
+          <FaRegPenToSquare />
+        </MenuBtn>
+        <MenuBtn>
+          <LuEraser />
+        </MenuBtn>
+        <ColorPick color={color} setColor={setColor} />
+        <StrokeSliderWrapper>
+          <span>선 굵기</span>
+          <input type="range" />
+        </StrokeSliderWrapper>
+        <MenuBtn>
+          <MdOutlineCancelPresentation />
+        </MenuBtn>
       </Wrapper>
     );
   }
@@ -34,7 +48,7 @@ const HiddenWrapper = styled.div`
   position: fixed;
   top: -100px;
   width: 100%;
-  transition: bottom 0.5s;
+  transition: top 0.5s;
 `;
 
 const Wrapper = styled.div`
@@ -56,11 +70,39 @@ const Wrapper = styled.div`
 `;
 
 const MenuBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 90px;
   height: 40px;
   border-radius: 5px;
   border: none;
-  text-align: center;
   cursor: pointer;
   margin: 10px;
+  svg {
+    font-size: 20px;
+  }
+`;
+
+const StrokeSliderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  margin: 10px;
+  svg {
+    font-size: 20px;
+  }
+  span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 3px;
+  }
+  input {
+    width: 150px;
+  }
 `;

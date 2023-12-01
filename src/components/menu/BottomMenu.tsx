@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { MdOutlineScreenShare } from "react-icons/md";
+import { MdPersonAddAlt1 } from "react-icons/md";
+import { LuLayoutGrid } from "react-icons/lu";
+import { PiSignOutBold } from "react-icons/pi";
 
 const BottomMenu = () => {
   const [showBottomMenu, setShowBottomMenu] = useState(false);
@@ -18,10 +22,18 @@ const BottomMenu = () => {
   if (showBottomMenu) {
     return (
       <Wrapper>
-        <MenuBtn>화면 공유</MenuBtn>
-        <MenuBtn>초대</MenuBtn>
-        <MenuBtn>토글</MenuBtn>
-        <MenuBtn>나가기</MenuBtn>
+        <MenuBtn>
+          <MdOutlineScreenShare />
+        </MenuBtn>
+        <MenuBtn>
+          <MdPersonAddAlt1 />
+        </MenuBtn>
+        <MenuBtn>
+          <LuLayoutGrid />
+        </MenuBtn>
+        <MenuBtn>
+          <PiSignOutBold />
+        </MenuBtn>
       </Wrapper>
     );
   }
@@ -56,11 +68,16 @@ const Wrapper = styled.div`
 `;
 
 const MenuBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 80px;
   height: 40px;
   border-radius: 5px;
   border: none;
-  text-align: center;
   cursor: pointer;
   margin: 10px;
+  svg {
+    font-size: 20px;
+  }
 `;
