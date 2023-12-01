@@ -1,7 +1,7 @@
-import React from 'react'
-import { useRef, useEffect } from 'react'
-import styled from 'styled-components'
-import { WebRTCUser } from '../types'
+import React from "react";
+import { useRef, useEffect } from "react";
+import styled from "styled-components";
+import { WebRTCUser } from "../../types";
 
 const Container = styled.div`
   width: 100vw;
@@ -13,7 +13,7 @@ const Container = styled.div`
   justify-content: center;
 
   gap: 5px;
-`
+`;
 
 const VideoContainer = styled.div`
   width: 100%;
@@ -22,12 +22,12 @@ const VideoContainer = styled.div`
   background-color: rgb(172, 172, 172);
 
   display: flex;
-`
+`;
 
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
-`
+`;
 
 const VideoListContainer = styled.div`
   height: 50%;
@@ -35,32 +35,40 @@ const VideoListContainer = styled.div`
   display: flex;
 
   gap: 5px;
-`
+`;
 
 type Props = {
-  userTopLeft: WebRTCUser
-  userTopRight: WebRTCUser
-  userBottomLeft: WebRTCUser
-  userBottomRight: WebRTCUser
-}
+  userTopLeft: WebRTCUser;
+  userTopRight: WebRTCUser;
+  userBottomLeft: WebRTCUser;
+  userBottomRight: WebRTCUser;
+};
 
 export default function Three({
   userTopLeft,
   userTopRight,
   userBottomLeft,
-  userBottomRight
+  userBottomRight,
 }: Props) {
-  const refTopLeft = useRef<HTMLVideoElement>(null)
-  const refTopRight = useRef<HTMLVideoElement>(null)
-  const refBottomLeft = useRef<HTMLVideoElement>(null)
-  const refBottomRight = useRef<HTMLVideoElement>(null)
+  const refTopLeft = useRef<HTMLVideoElement>(null);
+  const refTopRight = useRef<HTMLVideoElement>(null);
+  const refBottomLeft = useRef<HTMLVideoElement>(null);
+  const refBottomRight = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (refTopLeft.current) refTopLeft.current.srcObject = userTopLeft.stream
-    if (refTopRight.current) refTopRight.current.srcObject = userTopRight.stream
-    if (refBottomLeft.current) refBottomLeft.current.srcObject = userBottomLeft.stream
-    if (refBottomRight.current) refBottomRight.current.srcObject = userBottomRight.stream
-  }, [userTopLeft.stream, userTopRight.stream, userBottomLeft.stream, userBottomRight.stream])
+    if (refTopLeft.current) refTopLeft.current.srcObject = userTopLeft.stream;
+    if (refTopRight.current)
+      refTopRight.current.srcObject = userTopRight.stream;
+    if (refBottomLeft.current)
+      refBottomLeft.current.srcObject = userBottomLeft.stream;
+    if (refBottomRight.current)
+      refBottomRight.current.srcObject = userBottomRight.stream;
+  }, [
+    userTopLeft.stream,
+    userTopRight.stream,
+    userBottomLeft.stream,
+    userBottomRight.stream,
+  ]);
 
   return (
     <Container>
@@ -81,5 +89,5 @@ export default function Three({
         </VideoContainer>
       </VideoListContainer>
     </Container>
-  )
+  );
 }

@@ -1,36 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
-import { WebRTCUser } from "../../types";
-import One from "../One";
-import Two from "../Two";
-import Three from "../Three";
-import Four from "../Four";
-import Multiple from "../Four";
-import styled from "styled-components";
-import BottomMenu from "../BottomMenu";
-import DrawingMenu from "../DrawingMenu";
-
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: gray;
-
-  display: flex;
-`;
-
-const VideoContainer = styled.div`
-  width: 100%;
-  height: 100%;
-
-  background-color: rgb(172, 172, 172);
-
-  display: flex;
-`;
-
-const Video = styled.video`
-  width: 100%;
-  object-fit: contain;
-`;
+import { WebRTCUser } from "../types";
 
 const pc_config = {
   iceServers: [
@@ -46,7 +16,7 @@ const pc_config = {
 };
 const SOCKET_SERVER_URL = "http://192.168.1.20:3333";
 
-const DisplayPage = () => {
+export const usePeerConnection = () => {
   const socketRef = useRef<Socket>();
   const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -233,56 +203,9 @@ const DisplayPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPeerConnection, getLocalStream]);
 
-  console.log(users.length);
-
-  let a;
-
-  if (users.length === 0) {
-    a = (
-      <Container>
-        <VideoContainer>
-          <Video ref={localVideoRef} autoPlay></Video>
-        </VideoContainer>
-      </Container>
-    );
-  } else if (users.length === 1) {
-    a = <One user={users[0]}></One>;
-  } else if (users.length === 2) {
-    a = <Two userLeft={users[0]} userRight={users[1]}></Two>;
-  } else if (users.length === 3) {
-    a = (
-      <Three
-        userLeft={users[0]}
-        userRight={users[1]}
-        userBottom={users[2]}
-      ></Three>
-    );
-  } else if (users.length >= 4) {
-    a = (
-      <Four
-        userTopLeft={users[0]}
-        userTopRight={users[1]}
-        userBottomLeft={users[2]}
-        userBottomRight={users[3]}
-      ></Four>
-    );
-  }
-
-  return (
-    <div>
-      <MenuWrapper>
-        <BottomMenu />
-        <DrawingMenu />
-      </MenuWrapper>
-      {a}
-    </div>
-  );
+  return {
+    users,
+    localVideoRef,
+    getLocalStream,
+  };
 };
-
-export default DisplayPage;
-
-const MenuWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;

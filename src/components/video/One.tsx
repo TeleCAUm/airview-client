@@ -1,7 +1,7 @@
-import React from 'react'
-import { useRef, useEffect } from 'react'
-import styled from 'styled-components'
-import { WebRTCUser } from '../types'
+import React from "react";
+import { useRef, useEffect } from "react";
+import styled from "styled-components";
+import { WebRTCUser } from "../../types";
 
 const Container = styled.div`
   width: 100vw;
@@ -9,7 +9,7 @@ const Container = styled.div`
   background-color: gray;
 
   display: flex;
-`
+`;
 
 const VideoContainer = styled.div`
   width: 100%;
@@ -18,23 +18,23 @@ const VideoContainer = styled.div`
   background-color: rgb(172, 172, 172);
 
   display: flex;
-`
+`;
 
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
-`
+`;
 
 type Props = {
-  user: WebRTCUser
-}
+  user: WebRTCUser;
+};
 
 export default function One({ user }: Props) {
-  const ref = useRef<HTMLVideoElement>(null)
+  const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (ref.current) ref.current.srcObject = user.stream
-  }, [user.stream])
+    if (ref.current) ref.current.srcObject = user.stream;
+  }, [user.stream]);
 
   return (
     <Container>
@@ -42,5 +42,5 @@ export default function One({ user }: Props) {
         <Video ref={ref} autoPlay></Video>
       </VideoContainer>
     </Container>
-  )
+  );
 }
