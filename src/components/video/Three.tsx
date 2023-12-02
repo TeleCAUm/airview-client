@@ -1,7 +1,7 @@
-import React from 'react'
-import { useRef, useEffect } from 'react'
-import styled from 'styled-components'
-import { WebRTCUser } from '../types'
+import React from "react";
+import { useRef, useEffect } from "react";
+import styled from "styled-components";
+import { WebRTCUser } from "../../types";
 
 const Container = styled.div`
   width: 100vw;
@@ -13,7 +13,7 @@ const Container = styled.div`
   justify-content: center;
 
   gap: 5px;
-`
+`;
 
 const VideoContainer = styled.div`
   width: 100%;
@@ -22,12 +22,12 @@ const VideoContainer = styled.div`
   background-color: rgb(172, 172, 172);
 
   display: flex;
-`
+`;
 
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
-`
+`;
 
 const VideoListContainer = styled.div`
   height: 50%;
@@ -35,24 +35,24 @@ const VideoListContainer = styled.div`
   display: flex;
 
   gap: 5px;
-`
+`;
 
 type Props = {
-  userLeft: WebRTCUser
-  userRight: WebRTCUser
-  userBottom: WebRTCUser
-}
+  userLeft: WebRTCUser;
+  userRight: WebRTCUser;
+  userBottom: WebRTCUser;
+};
 
 export default function Three({ userLeft, userRight, userBottom }: Props) {
-  const refLeft = useRef<HTMLVideoElement>(null)
-  const refRight = useRef<HTMLVideoElement>(null)
-  const refBottom = useRef<HTMLVideoElement>(null)
+  const refLeft = useRef<HTMLVideoElement>(null);
+  const refRight = useRef<HTMLVideoElement>(null);
+  const refBottom = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (refLeft.current) refLeft.current.srcObject = userLeft.stream
-    if (refRight.current) refRight.current.srcObject = userRight.stream
-    if (refBottom.current) refBottom.current.srcObject = userBottom.stream
-  }, [userLeft.stream, userRight.stream, userBottom.stream])
+    if (refLeft.current) refLeft.current.srcObject = userLeft.stream;
+    if (refRight.current) refRight.current.srcObject = userRight.stream;
+    if (refBottom.current) refBottom.current.srcObject = userBottom.stream;
+  }, [userLeft.stream, userRight.stream, userBottom.stream]);
 
   return (
     <Container>
@@ -70,5 +70,5 @@ export default function Three({ userLeft, userRight, userBottom }: Props) {
         </VideoContainer>
       </VideoListContainer>
     </Container>
-  )
+  );
 }

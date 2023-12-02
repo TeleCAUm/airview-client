@@ -1,7 +1,7 @@
-import React from 'react'
-import { useRef, useEffect } from 'react'
-import styled from 'styled-components'
-import { WebRTCUser } from '../types'
+import React from "react";
+import { useRef, useEffect } from "react";
+import styled from "styled-components";
+import { WebRTCUser } from "../../types";
 
 const Container = styled.div`
   width: 100vw;
@@ -11,7 +11,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`
+`;
 
 const VideoContainer = styled.div`
   width: 100%;
@@ -20,12 +20,12 @@ const VideoContainer = styled.div`
   background-color: rgb(172, 172, 172);
 
   display: flex;
-`
+`;
 
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
-`
+`;
 
 const VideoListContainer = styled.div`
   height: 50%;
@@ -33,21 +33,21 @@ const VideoListContainer = styled.div`
   display: flex;
 
   gap: 5px;
-`
+`;
 
 type Props = {
-  userLeft: WebRTCUser
-  userRight: WebRTCUser
-}
+  userLeft: WebRTCUser;
+  userRight: WebRTCUser;
+};
 
 export default function Two({ userLeft, userRight }: Props) {
-  const refLeft = useRef<HTMLVideoElement>(null)
-  const refRight = useRef<HTMLVideoElement>(null)
+  const refLeft = useRef<HTMLVideoElement>(null);
+  const refRight = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (refLeft.current) refLeft.current.srcObject = userLeft.stream
-    if (refRight.current) refRight.current.srcObject = userRight.stream
-  }, [userLeft.stream, userRight.stream])
+    if (refLeft.current) refLeft.current.srcObject = userLeft.stream;
+    if (refRight.current) refRight.current.srcObject = userRight.stream;
+  }, [userLeft.stream, userRight.stream]);
 
   return (
     <Container>
@@ -60,5 +60,5 @@ export default function Two({ userLeft, userRight }: Props) {
         </VideoContainer>
       </VideoListContainer>
     </Container>
-  )
+  );
 }
