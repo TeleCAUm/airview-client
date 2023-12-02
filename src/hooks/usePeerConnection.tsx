@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { WebRTCUser } from "../types";
+import { useWebRTC } from "../context/WebRTCContext";
 
 const pc_config = {
   iceServers: [
@@ -14,14 +15,14 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "http://192.168.1.20:3333";
+const SOCKET_SERVER_URL = "http://localhost:8080";
 
 export const usePeerConnection = () => {
   const socketRef = useRef<Socket>();
   const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream>();
-  const [users, setUsers] = useState<WebRTCUser[]>([]);
+  const [users, dispatch] = useWebRTC();
 
   const getLocalStream = useCallback(async () => {
     try {
@@ -36,63 +37,60 @@ export const usePeerConnection = () => {
       if (!socketRef.current) return;
       socketRef.current.emit("join_room", {
         room: "1234",
-        email: "sample@naver.com",
+        name: "myName",
       });
     } catch (e) {
       console.log(`getUserMedia error: ${e}`);
     }
   }, []);
 
-  const createPeerConnection = useCallback(
-    (socketID: string, email: string) => {
-      try {
-        const pc = new RTCPeerConnection(pc_config);
+  const createPeerConnection = useCallback((socketID: string, name: string) => {
+    try {
+      const pc = new RTCPeerConnection(pc_config);
 
-        pc.onicecandidate = (e) => {
-          if (!(socketRef.current && e.candidate)) return;
-          console.log("onicecandidate");
-          socketRef.current.emit("candidate", {
-            candidate: e.candidate,
-            candidateSendID: socketRef.current.id,
-            candidateReceiveID: socketID,
-          });
+      pc.onicecandidate = (e) => {
+        if (!(socketRef.current && e.candidate)) return;
+        console.log("onicecandidate");
+        socketRef.current.emit("candidate", {
+          candidate: e.candidate,
+          candidateSendID: socketRef.current.id,
+          candidateReceiveID: socketID,
+        });
+      };
+
+      pc.oniceconnectionstatechange = (e) => {
+        console.log(e);
+      };
+
+      pc.ontrack = (e) => {
+        console.log("ontrack success");
+        const newUser: WebRTCUser = {
+          id: socketID,
+          name: name,
+          stream: e.streams[0],
+          isShared: true,
+          isSelected: false,
         };
+        dispatch({ type: "add_conn", user: newUser });
+        console.log("conn addition complete");
+      };
 
-        pc.oniceconnectionstatechange = (e) => {
-          console.log(e);
-        };
-
-        pc.ontrack = (e) => {
-          console.log("ontrack success");
-          setUsers((oldUsers) =>
-            oldUsers
-              .filter((user) => user.id !== socketID)
-              .concat({
-                id: socketID,
-                email,
-                stream: e.streams[0],
-              })
-          );
-        };
-
-        if (localStreamRef.current) {
-          console.log("localstream add");
-          localStreamRef.current.getTracks().forEach((track) => {
-            if (!localStreamRef.current) return;
-            pc.addTrack(track, localStreamRef.current);
-          });
-        } else {
-          console.log("no local stream");
-        }
-
-        return pc;
-      } catch (e) {
-        console.error(e);
-        return undefined;
+      if (localStreamRef.current) {
+        console.log("localstream add");
+        localStreamRef.current.getTracks().forEach((track) => {
+          if (!localStreamRef.current) return;
+          pc.addTrack(track, localStreamRef.current);
+        });
+      } else {
+        console.log("no local stream");
       }
-    },
-    []
-  );
+
+      return pc;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  }, []);
 
   useEffect(() => {
     socketRef.current = io(SOCKET_SERVER_URL);
@@ -100,10 +98,10 @@ export const usePeerConnection = () => {
 
     socketRef.current.on(
       "all_users",
-      (allUsers: Array<{ id: string; email: string }>) => {
+      (allUsers: Array<{ id: string; name: string }>) => {
         allUsers.forEach(async (user) => {
           if (!localStreamRef.current) return;
-          const pc = createPeerConnection(user.id, user.email);
+          const pc = createPeerConnection(user.id, user.name);
           if (!(pc && socketRef.current)) return;
           pcsRef.current = { ...pcsRef.current, [user.id]: pc };
           try {
@@ -116,7 +114,7 @@ export const usePeerConnection = () => {
             socketRef.current.emit("offer", {
               sdp: localSdp,
               offerSendID: socketRef.current.id,
-              offerSendEmail: "offerSendSample@sample.com",
+              offerSendName: "myName",
               offerReceiveID: user.id,
             });
           } catch (e) {
@@ -131,12 +129,12 @@ export const usePeerConnection = () => {
       async (data: {
         sdp: RTCSessionDescription;
         offerSendID: string;
-        offerSendEmail: string;
+        offerSendName: string;
       }) => {
-        const { sdp, offerSendID, offerSendEmail } = data;
+        const { sdp, offerSendID, offerSendName } = data;
         console.log("get offer");
         if (!localStreamRef.current) return;
-        const pc = createPeerConnection(offerSendID, offerSendEmail);
+        const pc = createPeerConnection(offerSendID, offerSendName);
         if (!(pc && socketRef.current)) return;
         pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
         try {
@@ -187,7 +185,7 @@ export const usePeerConnection = () => {
       if (!pcsRef.current[data.id]) return;
       pcsRef.current[data.id].close();
       delete pcsRef.current[data.id];
-      setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
+      dispatch({ type: "remove_conn", id: data.id });
     });
 
     return () => {
@@ -204,7 +202,6 @@ export const usePeerConnection = () => {
   }, [createPeerConnection, getLocalStream]);
 
   return {
-    users,
     localVideoRef,
     getLocalStream,
   };
