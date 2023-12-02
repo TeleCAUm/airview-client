@@ -16,6 +16,7 @@ const DisplayPage = () => {
   console.log(users.length);
 
   if (users.length === 0) {
+    // local
     return (
       <div>
         <MenuWrapper>
@@ -33,11 +34,7 @@ const DisplayPage = () => {
             {openTgl && <ParticipantMenu />}
           </ToggleWrapper>
         </MenuWrapper>
-        <Container>
-          <VideoContainer>
-            <Video ref={localVideoRef} autoPlay></Video>
-          </VideoContainer>
-        </Container>
+        <Video ref={localVideoRef} autoPlay></Video>
       </div>
     );
   }
@@ -59,34 +56,12 @@ const DisplayPage = () => {
           {openTgl && <ParticipantMenu />}
         </ToggleWrapper>
       </MenuWrapper>
-      <DisplayScreen participants={users} />
+      <DisplayScreen />
     </div>
   );
 };
 
 export default DisplayPage;
-
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: gray;
-
-  display: flex;
-`;
-
-const VideoContainer = styled.div`
-  width: 100%;
-  height: 100%;
-
-  background-color: rgb(172, 172, 172);
-
-  display: flex;
-`;
-
-const Video = styled.video`
-  width: 100%;
-  object-fit: contain;
-`;
 
 const MenuWrapper = styled.div`
   display: flex;
@@ -116,4 +91,9 @@ const ToggleBtn = styled.button<{ openTgl: boolean }>`
   border: none;
   cursor: pointer;
   z-index: 100;
+`;
+
+const Video = styled.video`
+  width: 100%;
+  object-fit: contain;
 `;
