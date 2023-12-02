@@ -8,7 +8,7 @@ type ColorPickProps = {
   setColor: (color: string) => void;
 };
 
-const ColorPick: React.FC<ColorPickProps> = ({ color, setColor }) => {
+const ColorPick = ({ color, setColor }: ColorPickProps) => {
   const [isSelect, setIsSelect] = useState([
     { key: "0", value: "#FF8B8B", checked: false },
     { key: "1", value: "#FFCA8B", checked: false },
