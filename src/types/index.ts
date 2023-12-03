@@ -5,5 +5,3 @@ export type WebRTCUser = {
   isShared: boolean;
   isSelected: boolean;
 };
-
-export type DisplayType = "tile" | "focus" | "draw";

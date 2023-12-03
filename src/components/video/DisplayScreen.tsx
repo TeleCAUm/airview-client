@@ -2,25 +2,55 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useWebRTC } from "../../context/WebRTCContext";
 
-const DisplayScreen = () => {
+type props = {
+  focusScreen: string;
+  handleFocus: (focusScreen: string) => void;
+};
+
+const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
   const [users, dispatch] = useWebRTC();
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length);
-  }, [users]);
+  }, [users, focusScreen]);
 
   useEffect(() => {
     users.forEach((user, idx) => {
       const ref = refs.current[idx];
       if (ref) ref.srcObject = user.stream;
     });
-  }, [users]);
+  }, [users, focusScreen]);
 
   const columns = Math.ceil(Math.sqrt(users.length));
   const rows = Math.ceil(users.length / columns);
+  if (focusScreen !== "" && users.length > 1) {
+    return (
+      <Container>
+        {users.map((user, idx) => {
+          if (focusScreen === user.id) {
+            return (
+              <VideoContainer
+                key={user.id}
+                onClick={() => {
+                  handleFocus(user.id);
+                }}
+              >
+                <Video
+                  ref={(ref) => (refs.current[idx] = ref)}
+                  autoPlay
+                ></Video>
+              </VideoContainer>
+            );
+          }
+        })}
+      </Container>
+    );
+    // focus view
+  }
 
   return (
+    // tile view
     <GridContainer columns={columns} rows={rows}>
       {users.map((user, idx) => {
         if (users.length === 3 && idx === 2) {
@@ -30,13 +60,21 @@ const DisplayScreen = () => {
               style={{
                 gridColumn: "auto / span 2",
               }}
+              onClick={() => {
+                handleFocus(user.id);
+              }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
             </VideoContainer>
           );
         }
         return (
-          <VideoContainer key={user.id}>
+          <VideoContainer
+            key={user.id}
+            onClick={() => {
+              handleFocus(user.id);
+            }}
+          >
             <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
           </VideoContainer>
         );
@@ -58,8 +96,16 @@ const GridContainer = styled.div<{
   place-items: center;
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   grid-template-rows: repeat(${(props) => props.rows}, 1fr);
-  row-gap: 1vw;
-  column-gap: 1vh;
+  row-gap: 0.5vw;
+  column-gap: 0.5vh;
+  background-color: gray;
+`;
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justyify-content: center;
   background-color: gray;
 `;
 
@@ -74,4 +120,5 @@ const VideoContainer = styled.div`
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
+  cursor: pointer;
 `;

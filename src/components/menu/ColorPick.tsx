@@ -74,6 +74,7 @@ const Circle = styled.div`
   width: 1.8rem;
   height: 1.8rem;
   border-radius: 1rem;
+  cursor: pointer;
 `;
 
 export default ColorPick;

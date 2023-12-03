@@ -1,25 +1,21 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useWebRTC } from "../../context/WebRTCContext";
 
-type Props = {};
+const ParticipantMenu = () => {
+  const [users, dispatch] = useWebRTC();
 
-export default function ParticipantMenu({}: Props) {
   return (
     <ParticipantListContainer>
       <ParticipantList>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
+        {users.map((user) => {
+          return <Participant>{user.id}</Participant>;
+        })}
       </ParticipantList>
     </ParticipantListContainer>
   );
-}
+};
+export default ParticipantMenu;
 
 const ParticipantListContainer = styled.div`
   position: fixed;

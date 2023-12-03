@@ -11,16 +11,24 @@ import { useWebRTC } from "../context/WebRTCContext";
 const DisplayPage = () => {
   const { localVideoRef, getLocalStream } = usePeerConnection();
   const [openTgl, setOpenTgl] = useState(false);
+  const [focusScreen, setFocusScreen] = useState("");
   const [users, dispatch] = useWebRTC();
 
   console.log(users.length);
+
+  const handleFocus = (id: string) => {
+    setFocusScreen((prevId) => {
+      if (prevId === id) return "";
+      else return id;
+    });
+  };
 
   if (users.length === 0) {
     // local
     return (
       <div>
         <MenuWrapper>
-          <BottomMenu />
+          <BottomMenu setFocusScreen={setFocusScreen} />
           <DrawingMenu />
           <ToggleWrapper>
             <ToggleBtn
@@ -42,7 +50,7 @@ const DisplayPage = () => {
   return (
     <div>
       <MenuWrapper>
-        <BottomMenu />
+        <BottomMenu setFocusScreen={setFocusScreen} />
         <DrawingMenu />
         <ToggleWrapper>
           <ToggleBtn
@@ -56,7 +64,7 @@ const DisplayPage = () => {
           {openTgl && <ParticipantMenu />}
         </ToggleWrapper>
       </MenuWrapper>
-      <DisplayScreen />
+      <DisplayScreen focusScreen={focusScreen} handleFocus={handleFocus} />
     </div>
   );
 };
