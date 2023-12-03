@@ -1,25 +1,37 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useWebRTC } from "../../context/WebRTCContext";
 
-type Props = {};
+const ParticipantMenu = () => {
+  const [users, dispatch] = useWebRTC();
+  const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
-export default function ParticipantMenu({}: Props) {
+  useEffect(() => {
+    refs.current = refs.current.slice(0, users.length);
+  }, [users]);
+
+  useEffect(() => {
+    users.forEach((user, idx) => {
+      const ref = refs.current[idx];
+      if (ref) ref.srcObject = user.stream;
+    });
+  }, [users]);
+
   return (
     <ParticipantListContainer>
       <ParticipantList>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
-        <Participant>a</Participant>
+        {users.map((user, idx) => {
+          return (
+            <VideoContainer>
+              <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay />
+            </VideoContainer>
+          );
+        })}
       </ParticipantList>
     </ParticipantListContainer>
   );
-}
+};
+export default ParticipantMenu;
 
 const ParticipantListContainer = styled.div`
   position: fixed;
@@ -30,7 +42,7 @@ const ParticipantListContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgba(200, 200, 200, 0.609);
-  overflow: auto;
+  overflow-y: scroll;
   z-index: 100;
 `;
 
@@ -40,14 +52,24 @@ const ParticipantList = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  justify-content: flex-start;
-  overflow-y: scroll;
 `;
 
-const Participant = styled.div`
-  height: 100px;
+const VideoContainer = styled.div`
+  height: 120px;
   width: 180px;
-  margin: 10px;
+  diplay: flex;
+  background-color: transparent;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+`;
+
+const Video = styled.video`
+  height: 100px;
+  width: 90%;
+  margin: 5px;
+  object-fit: contain;
+  cursor: pointer;
   background-color: rgb(82, 82, 82);
   flex-shrink: 0;
 `;
