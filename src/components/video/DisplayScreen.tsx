@@ -94,8 +94,8 @@ const GridContainer = styled.div<{
   place-items: center;
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   grid-template-rows: repeat(${(props) => props.rows}, 1fr);
-  row-gap: 0.1vw;
-  column-gap: 0.1vh;
+  row-gap: 0.3vw;
+  column-gap: 0.3vh;
   background-color: gray;
 `
 
