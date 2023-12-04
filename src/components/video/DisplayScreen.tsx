@@ -1,30 +1,30 @@
-import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
-import { useWebRTC } from "../../context/WebRTCContext";
+import React, { useEffect, useRef } from 'react'
+import styled from 'styled-components'
+import { useWebRTC } from '../../context/WebRTCContext'
 
 type props = {
-  focusScreen: string;
-  handleFocus: (focusScreen: string) => void;
-};
+  focusScreen: string
+  handleFocus: (focusScreen: string) => void
+}
 
 const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
-  const [users, dispatch] = useWebRTC();
-  const refs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [users, dispatch] = useWebRTC()
+  const refs = useRef<(HTMLVideoElement | null)[]>([])
 
   useEffect(() => {
-    refs.current = refs.current.slice(0, users.length);
-  }, [users, focusScreen]);
+    refs.current = refs.current.slice(0, users.length)
+  }, [users, focusScreen])
 
   useEffect(() => {
     users.forEach((user, idx) => {
-      const ref = refs.current[idx];
-      if (ref) ref.srcObject = user.stream;
-    });
-  }, [users, focusScreen]);
+      const ref = refs.current[idx]
+      if (ref) ref.srcObject = user.stream
+    })
+  }, [users, focusScreen])
 
-  const columns = Math.ceil(Math.sqrt(users.length));
-  const rows = Math.ceil(users.length / columns);
-  if (focusScreen !== "" && users.length > 1) {
+  const columns = Math.ceil(Math.sqrt(users.length))
+  const rows = Math.ceil(users.length / columns)
+  if (focusScreen !== '' && users.length > 1) {
     return (
       <Container>
         {users.map((user, idx) => {
@@ -33,19 +33,16 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
               <VideoContainer
                 key={user.id}
                 onClick={() => {
-                  handleFocus(user.id);
+                  handleFocus(user.id)
                 }}
               >
-                <Video
-                  ref={(ref) => (refs.current[idx] = ref)}
-                  autoPlay
-                ></Video>
+                <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
               </VideoContainer>
-            );
+            )
           }
         })}
       </Container>
-    );
+    )
     // focus view
   }
 
@@ -58,37 +55,37 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
             <VideoContainer
               key={user.id}
               style={{
-                gridColumn: "span 2",
-                gridRow: "auto / span 2",
+                gridColumn: 'span 2',
+                gridRow: 'auto / span 2'
               }}
               onClick={() => {
-                handleFocus(user.id);
+                handleFocus(user.id)
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
             </VideoContainer>
-          );
+          )
         }
         return (
           <VideoContainer
             key={user.id}
             onClick={() => {
-              handleFocus(user.id);
+              handleFocus(user.id)
             }}
           >
             <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
           </VideoContainer>
-        );
+        )
       })}
     </GridContainer>
-  );
-};
+  )
+}
 
-export default DisplayScreen;
+export default DisplayScreen
 
 const GridContainer = styled.div<{
-  columns: number;
-  rows: number;
+  columns: number
+  rows: number
 }>`
   position: relative;
   width: 100vw;
@@ -100,7 +97,7 @@ const GridContainer = styled.div<{
   row-gap: 0.1vw;
   column-gap: 0.1vh;
   background-color: gray;
-`;
+`
 
 const Container = styled.div`
   width: 100vw;
@@ -108,7 +105,7 @@ const Container = styled.div`
   display: flex;
   justyify-content: center;
   background-color: gray;
-`;
+`
 
 const VideoContainer = styled.div`
   width: 100%;
@@ -116,10 +113,10 @@ const VideoContainer = styled.div`
   background-color: rgb(172, 172, 172);
   display: flex;
   justify-content: center;
-`;
+`
 
 const Video = styled.video`
   width: 100%;
   object-fit: contain;
   cursor: pointer;
-`;
+`

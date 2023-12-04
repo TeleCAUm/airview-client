@@ -2,12 +2,17 @@ import React, { useEffect, useContext, useRef, useState, useCallback } from 'rea
 import styled from 'styled-components'
 import { DrawingMenuContext } from '../../context/DrawingMenuContext'
 
+interface CanvasProps {
+  width: number
+  height: number
+}
+
 interface Coordinate {
   x: number
   y: number
 }
 
-const Canvas = () => {
+const Canvas = ({ width, height }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
@@ -40,8 +45,6 @@ const Canvas = () => {
       context.closePath()
       context.stroke()
     }
-
-    setDrawnLines((prevLines) => [...prevLines, newMousePosition])
   }
 
   const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
@@ -67,15 +70,20 @@ const Canvas = () => {
   const paint = useCallback(
     (event: MouseEvent) => {
       event.preventDefault()
+
       if (isPainting) {
         const newMousePosition = getCoordinates(event)
+        if (newMousePosition && (newMousePosition.x > width || newMousePosition.y > height)) {
+          exitPaint()
+        }
+
         if (mousePosition && newMousePosition) {
           drawLine(mousePosition, newMousePosition)
           setMousePosition(newMousePosition)
         }
       }
     },
-    [isPainting, mousePosition, width, height]
+    [isPainting, mousePosition]
   )
 
   const exitPaint = useCallback(() => {
@@ -87,7 +95,7 @@ const Canvas = () => {
     })
     console.log(data)
     setDrawnLines([])
-  }, [drawnLines, width, height])
+  }, [drawnLines])
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -108,7 +116,7 @@ const Canvas = () => {
 
   return (
     <CanvasComponent>
-      <canvas ref={canvasRef} height="100%" width="100%" className="canvas" />
+      <canvas ref={canvasRef} height={height} width={width} className="canvas" />
     </CanvasComponent>
   )
 }
@@ -127,6 +135,4 @@ const CanvasComponent = styled.div`
   top: 0;
   left: 0;
   z-index: 10;
-  width: 100%;
-  height: 100%;
 `
