@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useWebRTC } from '../../context/WebRTCContext'
+import Canvas from '../drawing/Canvas'
 
 type props = {
   focusScreen: string
@@ -21,6 +22,20 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
       if (ref) ref.srcObject = user.stream
     })
   }, [users, focusScreen])
+
+  const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }[]>([])
+
+  useEffect(() => {
+    refs.current = refs.current.slice(0, users.length)
+    const newDimensions = users.map((_, idx) => {
+      const element = refs.current[idx]
+      return {
+        width: element?.offsetWidth || 0,
+        height: element?.offsetHeight || 0
+      }
+    })
+    setVideoDimensions(newDimensions)
+  }, [users])
 
   const columns = Math.ceil(Math.sqrt(users.length))
   const rows = Math.ceil(users.length / columns)
@@ -74,6 +89,10 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
             }}
           >
             <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
+            <Canvas
+              width={videoDimensions[idx]?.width || 0}
+              height={videoDimensions[idx]?.height || 0}
+            />
           </VideoContainer>
         )
       })}
@@ -103,7 +122,7 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
-  justyify-content: center;
+  justify-content: center;
   background-color: gray;
 `
 
