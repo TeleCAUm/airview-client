@@ -58,7 +58,8 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
             <VideoContainer
               key={user.id}
               style={{
-                gridColumn: "auto / span 2",
+                gridColumn: "span 2",
+                gridRow: "auto / span 2",
               }}
               onClick={() => {
                 handleFocus(user.id);
@@ -96,8 +97,8 @@ const GridContainer = styled.div<{
   place-items: center;
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   grid-template-rows: repeat(${(props) => props.rows}, 1fr);
-  row-gap: 0.5vw;
-  column-gap: 0.5vh;
+  row-gap: 0.1vw;
+  column-gap: 0.1vh;
   background-color: gray;
 `;
 
