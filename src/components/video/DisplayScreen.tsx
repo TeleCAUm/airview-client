@@ -15,6 +15,8 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
+  const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }[]>([])
+
 
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length);
@@ -27,7 +29,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
     });
   }, [users, focusScreen, selections]);
       
-  const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }[]>([])
+  
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length)
     const newDimensions = users.map((_, idx) => {
@@ -51,7 +53,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
               <VideoContainer
                 key={user.id}
                 onClick={() => {
-                  if (!isDrawing && !isErasing) handleFocus(user.id)
+                  handleFocus(user.id)
                 }}
               >
                 <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
@@ -76,12 +78,8 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
           return (
             <VideoContainer
               key={user.id}
-              style={{
-                gridColumn: 'span 2',
-                gridRow: 'auto / span 2'
-              }}
               onClick={() => {
-                if (!isDrawing && !isErasing) handleFocus(user.id)
+                handleFocus(user.id)
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
@@ -92,20 +90,6 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
             </VideoContainer>
           )
         }
-        return (
-          <VideoContainer
-            key={user.id}
-            onClick={() => {
-              if (!isDrawing && !isErasing) handleFocus(user.id)
-            }}
-          >
-            <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-            <Canvas
-              width={videoDimensions[idx]?.width || 0}
-              height={videoDimensions[idx]?.height || 0}
-            />
-          </VideoContainer>
-        )
       })}
     </GridContainer>
   )
