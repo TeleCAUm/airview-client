@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { useWebRTC } from '../../context/WebRTCContext'
 import Canvas from '../drawing/Canvas'
+import { DrawingMenuContext } from '../../context/DrawingMenuContext'
 
 type props = {
   focusScreen: string
@@ -11,6 +12,8 @@ type props = {
 const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
   const [users, dispatch] = useWebRTC()
   const refs = useRef<(HTMLVideoElement | null)[]>([])
+  const { state } = useContext(DrawingMenuContext)
+  const { color, thickness, isDrawing, isErasing } = state
 
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length)
@@ -48,10 +51,14 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
               <VideoContainer
                 key={user.id}
                 onClick={() => {
-                  handleFocus(user.id)
+                  if (!isDrawing && !isErasing) handleFocus(user.id)
                 }}
               >
                 <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
+                <Canvas
+                  width={videoDimensions[idx]?.width || 0}
+                  height={videoDimensions[idx]?.height || 0}
+                />
               </VideoContainer>
             )
           }
@@ -74,10 +81,14 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
                 gridRow: 'auto / span 2'
               }}
               onClick={() => {
-                handleFocus(user.id)
+                if (!isDrawing && !isErasing) handleFocus(user.id)
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
+              <Canvas
+                width={videoDimensions[idx]?.width || 0}
+                height={videoDimensions[idx]?.height || 0}
+              />
             </VideoContainer>
           )
         }
@@ -85,7 +96,7 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
           <VideoContainer
             key={user.id}
             onClick={() => {
-              handleFocus(user.id)
+              if (!isDrawing && !isErasing) handleFocus(user.id)
             }}
           >
             <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>

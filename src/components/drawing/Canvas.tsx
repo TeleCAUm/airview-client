@@ -132,7 +132,7 @@ const CanvasComponent = styled.div`
   border-radius: 15px;
   background: transparent;
   position: absolute;
-  top: 0;
-  left: 0;
+  /* top: 0; */
+  /* left: 0; */
   z-index: 10;
 `
