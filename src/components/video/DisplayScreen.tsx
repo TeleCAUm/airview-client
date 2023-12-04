@@ -5,29 +5,29 @@ import Canvas from '../drawing/Canvas'
 import { DrawingMenuContext } from '../../context/DrawingMenuContext'
 
 type props = {
-  focusScreen: string
-  handleFocus: (focusScreen: string) => void
-}
+  focusScreen: string;
+  handleFocus: (focusScreen: string) => void;
+  selections: string[];
+};
 
-const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
-  const [users, dispatch] = useWebRTC()
-  const refs = useRef<(HTMLVideoElement | null)[]>([])
+const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
+  const [users, dispatch] = useWebRTC();
+  const refs = useRef<(HTMLVideoElement | null)[]>([]);
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
 
   useEffect(() => {
-    refs.current = refs.current.slice(0, users.length)
-  }, [users, focusScreen])
+    refs.current = refs.current.slice(0, users.length);
+  }, [users, focusScreen, selections]);
 
   useEffect(() => {
     users.forEach((user, idx) => {
-      const ref = refs.current[idx]
-      if (ref) ref.srcObject = user.stream
-    })
-  }, [users, focusScreen])
-
+      const ref = refs.current[idx];
+      if (ref) ref.srcObject = user.stream;
+    });
+  }, [users, focusScreen, selections]);
+      
   const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }[]>([])
-
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length)
     const newDimensions = users.map((_, idx) => {
@@ -39,10 +39,10 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
     })
     setVideoDimensions(newDimensions)
   }, [users])
-
-  const columns = Math.ceil(Math.sqrt(users.length))
-  const rows = Math.ceil(users.length / columns)
-  if (focusScreen !== '' && users.length > 1) {
+  
+  const columns = Math.ceil(Math.sqrt(selections.length));
+  const rows = Math.ceil(selections.length / columns);
+  if (focusScreen !== "") {
     return (
       <Container>
         {users.map((user, idx) => {
@@ -72,7 +72,7 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
     // tile view
     <GridContainer columns={columns} rows={rows}>
       {users.map((user, idx) => {
-        if (users.length === 3 && idx === 2) {
+        if(selections.includes(user.id)){
           return (
             <VideoContainer
               key={user.id}

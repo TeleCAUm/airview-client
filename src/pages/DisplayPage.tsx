@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePeerConnection } from "../hooks/usePeerConnection";
 import styled from "styled-components";
 import DisplayScreen from "../components/video/DisplayScreen";
@@ -13,6 +13,7 @@ const DisplayPage = () => {
   const [openTgl, setOpenTgl] = useState(false);
   const [focusScreen, setFocusScreen] = useState("");
   const [users, dispatch] = useWebRTC();
+  const [selections, setSelections] = useState<string[]>([]);
 
   console.log(users.length);
 
@@ -23,7 +24,18 @@ const DisplayPage = () => {
     });
   };
 
-  if (users.length === 0) {
+  const handleSelections = (id: string) => {
+    if(!selections.includes(id)){
+      if(selections.length < 4)
+        setSelections((prevSelections) => [...prevSelections, id]);
+    }
+    else {
+      setSelections(selections.filter((item) => item !== id));
+    }
+  };
+  console.log(selections.length);
+
+  if (users.length === 0 || selections.length === 0) {
     // local
     return (
       <div>
@@ -39,10 +51,12 @@ const DisplayPage = () => {
             >
               {openTgl ? <IoIosArrowForward /> : <IoIosArrowBack />}
             </ToggleBtn>
-            {openTgl && <ParticipantMenu />}
+            {openTgl && <ParticipantMenu selections={selections} handleSelections={handleSelections} />}
           </ToggleWrapper>
         </MenuWrapper>
-        <Video ref={localVideoRef} autoPlay></Video>
+        <VideoContainer>
+          <Video ref={localVideoRef} autoPlay></Video>
+        </VideoContainer>
       </div>
     );
   }
@@ -61,10 +75,10 @@ const DisplayPage = () => {
           >
             {openTgl ? <IoIosArrowForward /> : <IoIosArrowBack />}
           </ToggleBtn>
-          {openTgl && <ParticipantMenu />}
+          {openTgl && <ParticipantMenu selections={selections} handleSelections={handleSelections} />}
         </ToggleWrapper>
       </MenuWrapper>
-      <DisplayScreen focusScreen={focusScreen} handleFocus={handleFocus} />
+      <DisplayScreen focusScreen={focusScreen} handleFocus={handleFocus} selections={selections} />
     </div>
   );
 };
@@ -99,6 +113,14 @@ const ToggleBtn = styled.button<{ openTgl: boolean }>`
   border: none;
   cursor: pointer;
   z-index: 100;
+`;
+
+const VideoContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-color: gray;
+  display: flex;
+  justify-content: center;
 `;
 
 const Video = styled.video`
