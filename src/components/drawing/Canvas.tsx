@@ -53,9 +53,11 @@ const Canvas = ({ width, height }: CanvasProps) => {
     }
 
     const canvas: HTMLCanvasElement = canvasRef.current
+    const rect = canvas.getBoundingClientRect() // Get the bounding rectangle of the canvas
+
     return {
-      x: event.pageX - canvas.offsetLeft,
-      y: event.pageY - canvas.offsetTop
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
     }
   }
 
@@ -71,7 +73,7 @@ const Canvas = ({ width, height }: CanvasProps) => {
     (event: MouseEvent) => {
       event.preventDefault()
 
-      if (isPainting) {
+      if (isPainting && isDrawing) {
         const newMousePosition = getCoordinates(event)
         if (newMousePosition && (newMousePosition.x > width || newMousePosition.y > height)) {
           exitPaint()
