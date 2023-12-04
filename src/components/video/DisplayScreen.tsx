@@ -5,26 +5,27 @@ import { useWebRTC } from "../../context/WebRTCContext";
 type props = {
   focusScreen: string;
   handleFocus: (focusScreen: string) => void;
+  selections: string[];
 };
 
-const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
+const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
   const [users, dispatch] = useWebRTC();
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length);
-  }, [users, focusScreen]);
+  }, [users, focusScreen, selections]);
 
   useEffect(() => {
     users.forEach((user, idx) => {
       const ref = refs.current[idx];
       if (ref) ref.srcObject = user.stream;
     });
-  }, [users, focusScreen]);
+  }, [users, focusScreen, selections]);
 
-  const columns = Math.ceil(Math.sqrt(users.length));
-  const rows = Math.ceil(users.length / columns);
-  if (focusScreen !== "" && users.length > 1) {
+  const columns = Math.ceil(Math.sqrt(selections.length));
+  const rows = Math.ceil(selections.length / columns);
+  if (focusScreen !== "") {
     return (
       <Container>
         {users.map((user, idx) => {
@@ -53,14 +54,10 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
     // tile view
     <GridContainer columns={columns} rows={rows}>
       {users.map((user, idx) => {
-        if (users.length === 3 && idx === 2) {
+        if(selections.includes(user.id)){
           return (
             <VideoContainer
               key={user.id}
-              style={{
-                gridColumn: "span 2",
-                gridRow: "auto / span 2",
-              }}
               onClick={() => {
                 handleFocus(user.id);
               }}
@@ -68,17 +65,7 @@ const DisplayScreen = ({ focusScreen, handleFocus }: props) => {
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
             </VideoContainer>
           );
-        }
-        return (
-          <VideoContainer
-            key={user.id}
-            onClick={() => {
-              handleFocus(user.id);
-            }}
-          >
-            <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-          </VideoContainer>
-        );
+        }  
       })}
     </GridContainer>
   );

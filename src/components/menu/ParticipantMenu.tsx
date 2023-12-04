@@ -2,7 +2,12 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useWebRTC } from "../../context/WebRTCContext";
 
-const ParticipantMenu = () => {
+type props = {
+  selections: string[];
+  handleSelections: (id: string) => void;
+};
+
+const ParticipantMenu = ({ selections, handleSelections }: props) => {
   const [users, dispatch] = useWebRTC();
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -21,9 +26,16 @@ const ParticipantMenu = () => {
     <ParticipantListContainer>
       <ParticipantList>
         {users.map((user, idx) => {
+          if(selections.includes(user.id)){
+            return (
+              <VideoContainer key={user.id} onClick={()=>{handleSelections(user.id);}} >
+                <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay />
+              </VideoContainer>
+            );
+          }
           return (
-            <VideoContainer>
-              <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay />
+            <VideoContainer key={user.id} onClick={()=>{handleSelections(user.id);}} >
+              <Video ref={(ref) => (refs.current[idx] = ref)} style={{filter: "brightness(0.5)"}} autoPlay/>
             </VideoContainer>
           );
         })}

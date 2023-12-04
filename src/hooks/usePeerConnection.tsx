@@ -68,8 +68,6 @@ export const usePeerConnection = () => {
           id: socketID,
           name: name,
           stream: e.streams[0],
-          isShared: true,
-          isSelected: false,
         };
         dispatch({ type: "add_conn", user: newUser });
         console.log("conn addition complete");
