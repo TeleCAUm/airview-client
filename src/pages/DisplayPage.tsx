@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { useParams } from 'react-router-dom';
 import { usePeerConnection } from '../hooks/usePeerConnection'
 import styled from 'styled-components'
 import DisplayScreen from '../components/video/DisplayScreen'
@@ -10,6 +11,7 @@ import { useWebRTC } from '../context/WebRTCContext'
 import { DrawingMenuContext } from '../context/DrawingMenuContext'
 
 const DisplayPage = () => {
+  const { roomCode } = useParams();
   const { localVideoRef, getLocalStream } = usePeerConnection()
   const [openTgl, setOpenTgl] = useState(false)
   const [focusScreen, setFocusScreen] = useState('')

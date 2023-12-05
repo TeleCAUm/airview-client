@@ -1,40 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import styled from "styled-components";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 
-const LandingPage = () => {
-  const [roomCode, setRoomCode] = useState("");
+const NamingPage = () => {
+  const [userName, setUserName] = useState("");
+  const { roomCode } = useParams();
   const navigate = useNavigate();
 
+
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setRoomCode(e.target.value);
+    setUserName(e.target.value);
   };
 
   const handleButtonClick = () => {
-    if(roomCode === ""){
-      const fullId = uuidv4();
-      const first8Chars = fullId.slice(0, 8);
-      navigate(`/${first8Chars}/naming`);
-    }
-    else{
-      navigate(`/${roomCode}/naming`);
-    }
+    navigate(`/${roomCode}`);
+
   }; 
 
   return (
     <Wrapper>
       <GetUserNameWrapper>
         <UserNameInputBox>
-          <input placeholder="Enter the Room Code" value={roomCode} onChange={handleInputChange}/>
-          <Button onClick={handleButtonClick} >Go!</Button>
+          <input placeholder="Enter your Name" value={userName} onChange={handleInputChange} />
+          <Button onClick={handleButtonClick}>Go!</Button>
         </UserNameInputBox>
       </GetUserNameWrapper>
     </Wrapper>
   );
 };
 
-export default LandingPage;
+export default NamingPage;
 
 const Wrapper = styled.div`
   width: 100%;
