@@ -1,10 +1,16 @@
 import React, { useEffect, useContext, useRef, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { DrawingMenuContext } from '../../context/DrawingMenuContext'
+import { WebRTCUser } from '../../types'
+import { io, Socket } from 'socket.io-client'
 
 interface CanvasProps {
   width: number
   height: number
+}
+
+interface props {
+  user: WebRTCUser
 }
 
 interface Coordinate {
@@ -12,10 +18,11 @@ interface Coordinate {
   y: number
 }
 
-const Canvas = () => {
+const Canvas = ({ user }: props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
+  const socketRef = useRef<Socket | null>(null)
 
   const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(undefined)
   const [isPainting, setIsPainting] = useState(false)
@@ -33,8 +40,21 @@ const Canvas = () => {
     window.addEventListener('resize', updateCanvasSize)
     updateCanvasSize() // Initial update
 
+    // Initialize socket only if it's not already established
+    if (!socketRef.current) {
+      socketRef.current = io(`${user.ipAddress}:55555`)
+    }
+
+    socketRef.current.on('connect', () => {
+      console.log('connected!')
+    })
+
     return () => {
       window.removeEventListener('resize', updateCanvasSize)
+      if (socketRef.current) {
+        // Disconnect the socket if needed
+        socketRef.current.disconnect()
+      }
     }
   }, [])
 
@@ -118,6 +138,7 @@ const Canvas = () => {
         line: drawnLines
       })
       console.log(data)
+      socketRef.current?.emit('send', data)
       setDrawnLines([])
     }
   }, [drawnLines])
