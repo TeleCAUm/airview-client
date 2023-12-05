@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { io, Socket } from "socket.io-client";
-import { WebRTCUser } from "../types";
-import { useWebRTC } from "../context/WebRTCContext";
-import { useRoom } from "../context/RoomContext";
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { io, Socket } from 'socket.io-client'
+import { WebRTCUser } from '../types'
+import { useWebRTC } from '../context/WebRTCContext'
+import { useRoom } from '../context/RoomContext'
 
 const pc_config = {
   iceServers: [
@@ -23,25 +23,26 @@ export const usePeerConnection = () => {
   const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
   const localVideoRef = useRef<HTMLVideoElement>(null)
   const localStreamRef = useRef<MediaStream>()
-  const [users, dispatch] = useWebRTC()
+  const [users, dispatchWebRTC] = useWebRTC()
+  const [roomInfo, dispatchRoom] = useRoom()
 
   const getLocalStream = useCallback(async () => {
     try {
-      console.log('getLocalStream');
+      console.log('getLocalStream')
       const localStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
           width: 1920,
-          height: 1080,
-        },
-      });
-      localStreamRef.current = localStream;
-      if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
-      if (!socketRef.current) return;
-      console.log(roomInfo);
-      socketRef.current.emit("join_room", {
+          height: 1080
+        }
+      })
+      localStreamRef.current = localStream
+      if (localVideoRef.current) localVideoRef.current.srcObject = localStream
+      if (!socketRef.current) return
+      console.log(roomInfo)
+      socketRef.current.emit('join_room', {
         room: roomInfo.roomCode,
-        name: roomInfo.userName,
-      });
+        name: roomInfo.userName
+      })
     } catch (e) {
       console.log(`getUserMedia error: ${e}`)
     }
@@ -70,11 +71,11 @@ export const usePeerConnection = () => {
           id: socketID,
           name: name,
 
-          stream: e.streams[0],
-        };
-        dispatchWebRTC({ type: "add_conn", user: newUser });
-        console.log("conn addition complete");
-      };
+          stream: e.streams[0]
+        }
+        dispatchWebRTC({ type: 'add_conn', user: newUser })
+        console.log('conn addition complete')
+      }
 
       if (localStreamRef.current) {
         console.log('localstream add')
@@ -94,37 +95,34 @@ export const usePeerConnection = () => {
   }, [])
 
   useEffect(() => {
-    console.log("useEffect");
-    socketRef.current = io(SOCKET_SERVER_URL);
-    getLocalStream();
+    console.log('useEffect')
+    socketRef.current = io(SOCKET_SERVER_URL)
+    getLocalStream()
 
-    socketRef.current.on(
-      "all_users",
-      (allUsers: Array<{ id: string; name: string }>) => {
-        allUsers.forEach(async (user) => {
-          if (!localStreamRef.current) return;
-          const pc = createPeerConnection(user.id, user.name);
-          if (!(pc && socketRef.current)) return;
-          pcsRef.current = { ...pcsRef.current, [user.id]: pc };
-          try {
-            const localSdp = await pc.createOffer({
-              offerToReceiveAudio: true,
-              offerToReceiveVideo: true,
-            });
-            console.log("create offer success");
-            await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-            socketRef.current.emit("offer", {
-              sdp: localSdp,
-              offerSendID: socketRef.current.id,
-              offerSendName: roomInfo.userName,
-              offerReceiveID: user.id,
-            });
-          } catch (e) {
-            console.error(e);
-          }
-        });
-      }
-    );
+    socketRef.current.on('all_users', (allUsers: Array<{ id: string; name: string }>) => {
+      allUsers.forEach(async (user) => {
+        if (!localStreamRef.current) return
+        const pc = createPeerConnection(user.id, user.name)
+        if (!(pc && socketRef.current)) return
+        pcsRef.current = { ...pcsRef.current, [user.id]: pc }
+        try {
+          const localSdp = await pc.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+          })
+          console.log('create offer success')
+          await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+          socketRef.current.emit('offer', {
+            sdp: localSdp,
+            offerSendID: socketRef.current.id,
+            offerSendName: roomInfo.userName,
+            offerReceiveID: user.id
+          })
+        } catch (e) {
+          console.error(e)
+        }
+      })
+    })
 
     socketRef.current.on(
       'getOffer',
@@ -176,14 +174,14 @@ export const usePeerConnection = () => {
       }
     )
 
-    socketRef.current.on("user_exit", (data: { id: string }) => {
-      if (!pcsRef.current[data.id]) return;
-      pcsRef.current[data.id].close();
-      delete pcsRef.current[data.id];
-      console.log("remove");
+    socketRef.current.on('user_exit', (data: { id: string }) => {
+      if (!pcsRef.current[data.id]) return
+      pcsRef.current[data.id].close()
+      delete pcsRef.current[data.id]
+      console.log('remove')
 
-      dispatchWebRTC({ type: "remove_conn", id: data.id });
-    });
+      dispatchWebRTC({ type: 'remove_conn', id: data.id })
+    })
 
     return () => {
       if (socketRef.current) {
