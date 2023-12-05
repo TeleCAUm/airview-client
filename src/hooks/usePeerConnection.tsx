@@ -12,19 +12,18 @@ const pc_config = {
     //   'username': '[USERNAME]'
     // },
     {
-      urls: "stun:stun.l.google.com:19302",
-    },
-  ],
-};
-const SOCKET_SERVER_URL = "http://localhost:3333";
+      urls: 'stun:stun.l.google.com:19302'
+    }
+  ]
+}
+const SOCKET_SERVER_URL = 'http://localhost:3333'
 
 export const usePeerConnection = () => {
-  const socketRef = useRef<Socket>();
-  const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const localStreamRef = useRef<MediaStream>();
-  const [users, dispatchWebRTC] = useWebRTC();
-  const [roomInfo, dispatchRoom] = useRoom();
+  const socketRef = useRef<Socket>()
+  const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
+  const localVideoRef = useRef<HTMLVideoElement>(null)
+  const localStreamRef = useRef<MediaStream>()
+  const [users, dispatch] = useWebRTC()
 
   const getLocalStream = useCallback(async () => {
     try {
@@ -44,35 +43,33 @@ export const usePeerConnection = () => {
         name: roomInfo.userName,
       });
     } catch (e) {
-      console.log(`getUserMedia error: ${e}`);
+      console.log(`getUserMedia error: ${e}`)
     }
-  }, []);
+  }, [])
 
   const createPeerConnection = useCallback((socketID: string, name: string) => {
     try {
-      const pc = new RTCPeerConnection(pc_config);
-      console.log('createPeerConnection');
-
+      const pc = new RTCPeerConnection(pc_config)
       pc.onicecandidate = (e) => {
-        if (!(socketRef.current && e.candidate)) return;
-        console.log("onicecandidate");
-        socketRef.current.emit("candidate", {
+        if (!(socketRef.current && e.candidate)) return
+        console.log('onicecandidate')
+        socketRef.current.emit('candidate', {
           candidate: e.candidate,
           candidateSendID: socketRef.current.id,
-          candidateReceiveID: socketID,
-        });
-      };
+          candidateReceiveID: socketID
+        })
+      }
 
       pc.oniceconnectionstatechange = (e) => {
-        console.log('oniceconnectionstatechange');
-        console.log(e);
-      };
+        console.log(e)
+      }
 
       pc.ontrack = (e) => {
-        console.log("ontrack success");
+        console.log('ontrack success')
         const newUser: WebRTCUser = {
           id: socketID,
           name: name,
+
           stream: e.streams[0],
         };
         dispatchWebRTC({ type: "add_conn", user: newUser });
@@ -80,21 +77,21 @@ export const usePeerConnection = () => {
       };
 
       if (localStreamRef.current) {
-        console.log("localstream add");
+        console.log('localstream add')
         localStreamRef.current.getTracks().forEach((track) => {
-          if (!localStreamRef.current) return;
-          pc.addTrack(track, localStreamRef.current);
-        });
+          if (!localStreamRef.current) return
+          pc.addTrack(track, localStreamRef.current)
+        })
       } else {
-        console.log("no local stream");
+        console.log('no local stream')
       }
 
-      return pc;
+      return pc
     } catch (e) {
-      console.error(e);
-      return undefined;
+      console.error(e)
+      return undefined
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     console.log("useEffect");
@@ -130,61 +127,54 @@ export const usePeerConnection = () => {
     );
 
     socketRef.current.on(
-      "getOffer",
-      async (data: {
-        sdp: RTCSessionDescription;
-        offerSendID: string;
-        offerSendName: string;
-      }) => {
-        const { sdp, offerSendID, offerSendName } = data;
-        console.log("get offer");
-        if (!localStreamRef.current) return;
-        const pc = createPeerConnection(offerSendID, offerSendName);
-        if (!(pc && socketRef.current)) return;
-        pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
+      'getOffer',
+      async (data: { sdp: RTCSessionDescription; offerSendID: string; offerSendName: string }) => {
+        const { sdp, offerSendID, offerSendName } = data
+        console.log('get offer')
+        if (!localStreamRef.current) return
+        const pc = createPeerConnection(offerSendID, offerSendName)
+        if (!(pc && socketRef.current)) return
+        pcsRef.current = { ...pcsRef.current, [offerSendID]: pc }
         try {
-          await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-          console.log("answer set remote description success");
+          await pc.setRemoteDescription(new RTCSessionDescription(sdp))
+          console.log('answer set remote description success')
           const localSdp = await pc.createAnswer({
             offerToReceiveVideo: true,
-            offerToReceiveAudio: true,
-          });
-          await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-          socketRef.current.emit("answer", {
+            offerToReceiveAudio: true
+          })
+          await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+          socketRef.current.emit('answer', {
             sdp: localSdp,
             answerSendID: socketRef.current.id,
-            answerReceiveID: offerSendID,
-          });
+            answerReceiveID: offerSendID
+          })
         } catch (e) {
-          console.error(e);
+          console.error(e)
         }
       }
-    );
+    )
 
     socketRef.current.on(
-      "getAnswer",
+      'getAnswer',
       (data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-        const { sdp, answerSendID } = data;
-        console.log("get answer");
-        const pc: RTCPeerConnection = pcsRef.current[answerSendID];
-        if (!pc) return;
-        pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        const { sdp, answerSendID } = data
+        console.log('get answer')
+        const pc: RTCPeerConnection = pcsRef.current[answerSendID]
+        if (!pc) return
+        pc.setRemoteDescription(new RTCSessionDescription(sdp))
       }
-    );
+    )
 
     socketRef.current.on(
-      "getCandidate",
-      async (data: {
-        candidate: RTCIceCandidateInit;
-        candidateSendID: string;
-      }) => {
-        console.log("get candidate");
-        const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
-        if (!pc) return;
-        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-        console.log("candidate add success");
+      'getCandidate',
+      async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
+        console.log('get candidate')
+        const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID]
+        if (!pc) return
+        await pc.addIceCandidate(new RTCIceCandidate(data.candidate))
+        console.log('candidate add success')
       }
-    );
+    )
 
     socketRef.current.on("user_exit", (data: { id: string }) => {
       if (!pcsRef.current[data.id]) return;
@@ -197,19 +187,19 @@ export const usePeerConnection = () => {
 
     return () => {
       if (socketRef.current) {
-        socketRef.current.disconnect();
+        socketRef.current.disconnect()
       }
       users.forEach((user) => {
-        if (!pcsRef.current[user.id]) return;
-        pcsRef.current[user.id].close();
-        delete pcsRef.current[user.id];
-      });
-    };
+        if (!pcsRef.current[user.id]) return
+        pcsRef.current[user.id].close()
+        delete pcsRef.current[user.id]
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createPeerConnection, getLocalStream]);
+  }, [createPeerConnection, getLocalStream])
 
   return {
     localVideoRef,
-    getLocalStream,
-  };
-};
+    getLocalStream
+  }
+}
