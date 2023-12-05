@@ -3,20 +3,33 @@ import { useParams } from 'react-router-dom';
 import styled from "styled-components";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext'
+
 
 const NamingPage = () => {
   const [userName, setUserName] = useState("");
-  const { roomCode } = useParams();
   const navigate = useNavigate();
+  const [roomInfo, dispatch] = useRoom()
 
+  if(roomInfo.roomCode === ""){
+    navigate('');
+  }
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setUserName(e.target.value);
   };
 
   const handleButtonClick = () => {
-    navigate(`/${roomCode}`);
-
+    if(userName === ""){
+        const fullId = uuidv4();
+        const first8Chars = fullId.slice(0, 4);
+        dispatch({ type: 'set_name', userName: first8Chars })
+        navigate(`/${roomInfo.roomCode}`);
+      }
+    else{
+        dispatch({ type: 'set_name', userName: userName })
+        navigate(`/${roomInfo.roomCode}`);
+    }
   }; 
 
   return (

@@ -17,11 +17,11 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/landing",
+    path: "/",
     element: <LandingPage />,
   },
   {
-    path: "/:roomCode/naming",
+    path: "/naming",
     element: <NamingPage />,
   },
   

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext'
 
 const LandingPage = () => {
   const [roomCode, setRoomCode] = useState("");
   const navigate = useNavigate();
+  const [roomInfo, dispatch] = useRoom()
+
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setRoomCode(e.target.value);
@@ -15,10 +18,12 @@ const LandingPage = () => {
     if(roomCode === ""){
       const fullId = uuidv4();
       const first8Chars = fullId.slice(0, 8);
-      navigate(`/${first8Chars}/naming`);
+      dispatch({ type: 'enter_room', roomCode: first8Chars })
+      navigate(`naming`);
     }
     else{
-      navigate(`/${roomCode}/naming`);
+      dispatch({ type: 'enter_room', roomCode: roomCode })
+      navigate(`/naming`);
     }
   }; 
 
