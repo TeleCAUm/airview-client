@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import { DrawingMenuProvider } from './context/DrawingMenuContext'
+import { RoomProvider } from "./context/RoomContext"
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-  <DrawingMenuProvider>
+  <RoomProvider>
     <App />
-  </DrawingMenuProvider>
+  </RoomProvider>
 )
 
 // If you want to start measuring performance in your app, pass a function
