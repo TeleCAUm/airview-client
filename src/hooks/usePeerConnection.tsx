@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { WebRTCUser } from "../types";
 import { useWebRTC } from "../context/WebRTCContext";
+import { useRoom } from "../context/RoomContext";
 
 const pc_config = {
   iceServers: [
@@ -15,17 +16,19 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "http://localhost:8080";
+const SOCKET_SERVER_URL = "http://localhost:3333";
 
 export const usePeerConnection = () => {
   const socketRef = useRef<Socket>();
   const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream>();
-  const [users, dispatch] = useWebRTC();
+  const [users, dispatchWebRTC] = useWebRTC();
+  const [roomInfo, dispatchRoom] = useRoom();
 
   const getLocalStream = useCallback(async () => {
     try {
+      console.log('getLocalStream');
       const localStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
           width: 1920,
@@ -35,9 +38,10 @@ export const usePeerConnection = () => {
       localStreamRef.current = localStream;
       if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
       if (!socketRef.current) return;
+      console.log(roomInfo);
       socketRef.current.emit("join_room", {
-        room: "1234",
-        name: "myName",
+        room: roomInfo.roomCode,
+        name: roomInfo.userName,
       });
     } catch (e) {
       console.log(`getUserMedia error: ${e}`);
@@ -47,6 +51,7 @@ export const usePeerConnection = () => {
   const createPeerConnection = useCallback((socketID: string, name: string) => {
     try {
       const pc = new RTCPeerConnection(pc_config);
+      console.log('createPeerConnection');
 
       pc.onicecandidate = (e) => {
         if (!(socketRef.current && e.candidate)) return;
@@ -59,6 +64,7 @@ export const usePeerConnection = () => {
       };
 
       pc.oniceconnectionstatechange = (e) => {
+        console.log('oniceconnectionstatechange');
         console.log(e);
       };
 
@@ -69,7 +75,7 @@ export const usePeerConnection = () => {
           name: name,
           stream: e.streams[0],
         };
-        dispatch({ type: "add_conn", user: newUser });
+        dispatchWebRTC({ type: "add_conn", user: newUser });
         console.log("conn addition complete");
       };
 
@@ -91,6 +97,7 @@ export const usePeerConnection = () => {
   }, []);
 
   useEffect(() => {
+    console.log("useEffect");
     socketRef.current = io(SOCKET_SERVER_URL);
     getLocalStream();
 
@@ -112,7 +119,7 @@ export const usePeerConnection = () => {
             socketRef.current.emit("offer", {
               sdp: localSdp,
               offerSendID: socketRef.current.id,
-              offerSendName: "myName",
+              offerSendName: roomInfo.userName,
               offerReceiveID: user.id,
             });
           } catch (e) {
@@ -183,7 +190,9 @@ export const usePeerConnection = () => {
       if (!pcsRef.current[data.id]) return;
       pcsRef.current[data.id].close();
       delete pcsRef.current[data.id];
-      dispatch({ type: "remove_conn", id: data.id });
+      console.log("remove");
+
+      dispatchWebRTC({ type: "remove_conn", id: data.id });
     });
 
     return () => {
