@@ -73,7 +73,7 @@ const Canvas = ({ width, height }: CanvasProps) => {
     (event: MouseEvent) => {
       event.preventDefault()
 
-      if (isPainting && isDrawing) {
+      if (isPainting && (isDrawing || isErasing)) {
         const newMousePosition = getCoordinates(event)
         if (newMousePosition && (newMousePosition.x > width || newMousePosition.y > height)) {
           exitPaint()
