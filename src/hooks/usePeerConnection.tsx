@@ -48,7 +48,7 @@ export const usePeerConnection = () => {
     }
   }, [])
 
-  const createPeerConnection = useCallback((socketID: string, name: string) => {
+  const createPeerConnection = useCallback((socketID: string, name: string, ipAddress: string) => {
     try {
       const pc = new RTCPeerConnection(pc_config)
       pc.onicecandidate = (e) => {
@@ -70,7 +70,7 @@ export const usePeerConnection = () => {
         const newUser: WebRTCUser = {
           id: socketID,
           name: name,
-
+          ipAddress: ipAddress,
           stream: e.streams[0]
         }
         dispatchWebRTC({ type: 'add_conn', user: newUser })
@@ -99,38 +99,46 @@ export const usePeerConnection = () => {
     socketRef.current = io(SOCKET_SERVER_URL)
     getLocalStream()
 
-    socketRef.current.on('all_users', (allUsers: Array<{ id: string; name: string }>) => {
-      allUsers.forEach(async (user) => {
-        if (!localStreamRef.current) return
-        const pc = createPeerConnection(user.id, user.name)
-        if (!(pc && socketRef.current)) return
-        pcsRef.current = { ...pcsRef.current, [user.id]: pc }
-        try {
-          const localSdp = await pc.createOffer({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true
-          })
-          console.log('create offer success')
-          await pc.setLocalDescription(new RTCSessionDescription(localSdp))
-          socketRef.current.emit('offer', {
-            sdp: localSdp,
-            offerSendID: socketRef.current.id,
-            offerSendName: roomInfo.userName,
-            offerReceiveID: user.id
-          })
-        } catch (e) {
-          console.error(e)
-        }
-      })
-    })
+    socketRef.current.on(
+      'all_users',
+      (allUsers: Array<{ id: string; name: string; ipAddress: string }>) => {
+        allUsers.forEach(async (user) => {
+          if (!localStreamRef.current) return
+          const pc = createPeerConnection(user.id, user.name, user.ipAddress)
+          if (!(pc && socketRef.current)) return
+          pcsRef.current = { ...pcsRef.current, [user.id]: pc }
+          try {
+            const localSdp = await pc.createOffer({
+              offerToReceiveAudio: true,
+              offerToReceiveVideo: true
+            })
+            console.log('create offer success')
+            await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+            socketRef.current.emit('offer', {
+              sdp: localSdp,
+              offerSendID: socketRef.current.id,
+              offerSendName: roomInfo.userName,
+              offerReceiveID: user.id
+            })
+          } catch (e) {
+            console.error(e)
+          }
+        })
+      }
+    )
 
     socketRef.current.on(
       'getOffer',
-      async (data: { sdp: RTCSessionDescription; offerSendID: string; offerSendName: string }) => {
+      async (data: {
+        sdp: RTCSessionDescription
+        offerSendID: string
+        offerSendName: string
+        ipAddress: string
+      }) => {
         const { sdp, offerSendID, offerSendName } = data
         console.log('get offer')
         if (!localStreamRef.current) return
-        const pc = createPeerConnection(offerSendID, offerSendName)
+        const pc = createPeerConnection(offerSendID, offerSendName, data.ipAddress)
         if (!(pc && socketRef.current)) return
         pcsRef.current = { ...pcsRef.current, [offerSendID]: pc }
         try {
