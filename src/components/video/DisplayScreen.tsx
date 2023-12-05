@@ -78,7 +78,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-              <Canvas />
+              <Canvas user={user} />
             </VideoContainer>
           )
         }
