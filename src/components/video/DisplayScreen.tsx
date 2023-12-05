@@ -56,7 +56,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
                 }}
               >
                 <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-                <Canvas selections={selections} />
+                <Canvas user={user} />
               </VideoContainer>
             )
           }
@@ -97,7 +97,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-              <Canvas selections={selections} />
+              <Canvas user={user} />
             </VideoContainer>
           )
         }
