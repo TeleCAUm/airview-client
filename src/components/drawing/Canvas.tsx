@@ -12,7 +12,11 @@ interface Coordinate {
   y: number
 }
 
-const Canvas = () => {
+type props = {
+  selections: string[]
+}
+
+const Canvas = ({selections}:props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
@@ -36,7 +40,7 @@ const Canvas = () => {
     return () => {
       window.removeEventListener('resize', updateCanvasSize)
     }
-  }, [])
+  }, [selections])
 
   const drawLine = (originalMousePosition: Coordinate, newMousePosition: Coordinate) => {
     if (!canvasRef.current) {

@@ -16,6 +16,7 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
   const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }[]>([])
+  let returnCount:number = 0;
 
   useEffect(() => {
     refs.current = refs.current.slice(0, users.length)
@@ -38,31 +39,31 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
       }
     })
     setVideoDimensions(newDimensions)
-  }, [users])
+  }, [users, focusScreen, selections])
 
   const columns = Math.ceil(Math.sqrt(selections.length))
   const rows = Math.ceil(selections.length / columns)
-  if (focusScreen !== '') {
+  if (focusScreen !== '') {   // focus view
     return (
       <Container>
         {users.map((user, idx) => {
           if (focusScreen === user.id) {
             return (
-              <VideoContainer
+              <VideoContainer columns={100} rows={100}
                 key={user.id}
                 onClick={() => {
                   handleFocus(user.id)
                 }}
               >
                 <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-                <Canvas />
+                <Canvas selections={selections} />
               </VideoContainer>
             )
           }
         })}
       </Container>
     )
-    // focus view
+    
   }
 
   return (
@@ -70,15 +71,33 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
     <GridContainer columns={columns} rows={rows}>
       {users.map((user, idx) => {
         if (selections.includes(user.id)) {
+          returnCount++;
+          if(selections.length === 3 && selections.length === returnCount){    
+            return (
+              <VideoContainer columns={100/columns-0.1} rows={100/rows-0.15}
+                key={user.id}
+                onClick={() => {
+                  handleFocus(user.id)
+                }}
+                style = {{
+                  gridColumn: "span 2",
+                  gridRow: "auto / span 2",
+                }}
+              >
+                <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
+                <Canvas selections={selections} />
+              </VideoContainer>
+            )
+          }
           return (
-            <VideoContainer
+            <VideoContainer columns={100/columns-0.1} rows={100/rows-0.15}
               key={user.id}
               onClick={() => {
                 handleFocus(user.id)
               }}
             >
               <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay></Video>
-              <Canvas />
+              <Canvas selections={selections} />
             </VideoContainer>
           )
         }
@@ -100,8 +119,8 @@ const GridContainer = styled.div<{
   place-items: center;
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   grid-template-rows: repeat(${(props) => props.rows}, 1fr);
-  row-gap: 0.3vw;
-  column-gap: 0.3vh;
+  row-gap: 0.1vw;
+  column-gap: 0.1vh;
   background-color: gray;
 `
 
@@ -113,9 +132,12 @@ const Container = styled.div`
   background-color: gray;
 `
 
-const VideoContainer = styled.div`
-  width: 100%;
-  height: 100%;
+const VideoContainer = styled.div<{
+  columns: number
+  rows: number
+}>`
+  width: ${(props) => props.columns}vw;
+  height: ${(props) => props.rows}vh;
   background-color: rgb(172, 172, 172);
   display: flex;
   justify-content: center;
