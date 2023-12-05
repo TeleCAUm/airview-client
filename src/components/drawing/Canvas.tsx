@@ -12,7 +12,7 @@ interface Coordinate {
   y: number
 }
 
-const Canvas = ({ width, height }: CanvasProps) => {
+const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { state } = useContext(DrawingMenuContext)
   const { color, thickness, isDrawing, isErasing } = state
@@ -20,6 +20,23 @@ const Canvas = ({ width, height }: CanvasProps) => {
   const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(undefined)
   const [isPainting, setIsPainting] = useState(false)
   const [drawnLines, setDrawnLines] = useState<Array<Coordinate>>([])
+
+  const updateCanvasSize = () => {
+    const canvas = canvasRef.current
+    if (canvas && canvas.parentElement) {
+      canvas.width = canvas.parentElement.offsetWidth
+      canvas.height = canvas.parentElement.offsetHeight
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', updateCanvasSize)
+    updateCanvasSize() // Initial update
+
+    return () => {
+      window.removeEventListener('resize', updateCanvasSize)
+    }
+  }, [])
 
   const drawLine = (originalMousePosition: Coordinate, newMousePosition: Coordinate) => {
     if (!canvasRef.current) {
@@ -75,13 +92,16 @@ const Canvas = ({ width, height }: CanvasProps) => {
 
       if (isPainting && (isDrawing || isErasing)) {
         const newMousePosition = getCoordinates(event)
-        if (newMousePosition && (newMousePosition.x > width || newMousePosition.y > height)) {
-          exitPaint()
-        }
+        const canvas = canvasRef.current
 
-        if (mousePosition && newMousePosition) {
-          drawLine(mousePosition, newMousePosition)
-          setMousePosition(newMousePosition)
+        if (canvas && newMousePosition) {
+          const { width, height } = canvas
+          if (newMousePosition.x > width || newMousePosition.y > height) {
+            exitPaint()
+          } else if (mousePosition) {
+            drawLine(mousePosition, newMousePosition)
+            setMousePosition(newMousePosition)
+          }
         }
       }
     },
@@ -89,14 +109,17 @@ const Canvas = ({ width, height }: CanvasProps) => {
   )
 
   const exitPaint = useCallback(() => {
-    setIsPainting(false)
-    const data = JSON.stringify({
-      width: width,
-      height: height,
-      line: drawnLines
-    })
-    console.log(data)
-    setDrawnLines([])
+    const canvas = canvasRef.current
+    if (canvas) {
+      setIsPainting(false)
+      const data = JSON.stringify({
+        width: canvas.width,
+        height: canvas.height,
+        line: drawnLines
+      })
+      console.log(data)
+      setDrawnLines([])
+    }
   }, [drawnLines])
 
   useEffect(() => {
@@ -116,25 +139,16 @@ const Canvas = ({ width, height }: CanvasProps) => {
     }
   }, [startPaint, paint, exitPaint])
 
-  return (
-    <CanvasComponent>
-      <canvas ref={canvasRef} height={height} width={width} className="canvas" />
-    </CanvasComponent>
-  )
-}
-
-Canvas.defaultProps = {
-  width: 1000,
-  height: window.innerHeight
+  return <CanvasComponent ref={canvasRef} className="canvas"></CanvasComponent>
 }
 
 export default Canvas
 
-const CanvasComponent = styled.div`
+const CanvasComponent = styled.canvas`
   border-radius: 15px;
   background: transparent;
   position: absolute;
-  /* top: 0; */
-  /* left: 0; */
+  height: '100%';
+  width: '100%';
   z-index: 10;
 `
