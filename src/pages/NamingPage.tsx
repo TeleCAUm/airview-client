@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import styled from "styled-components";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../context/RoomContext'
 
-const LandingPage = () => {
-  const [roomCode, setRoomCode] = useState("");
+
+const NamingPage = () => {
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const [roomInfo, dispatch] = useRoom()
 
+  if(roomInfo.roomCode === ""){
+    navigate('');
+  }
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setRoomCode(e.target.value);
+    setUserName(e.target.value);
   };
 
   const handleButtonClick = () => {
-    if(roomCode === ""){
-      const fullId = uuidv4();
-      const first8Chars = fullId.slice(0, 8);
-      dispatch({ type: 'enter_room', roomCode: first8Chars })
-      navigate(`naming`);
-    }
+    if(userName === ""){
+        const fullId = uuidv4();
+        const first8Chars = fullId.slice(0, 4);
+        dispatch({ type: 'set_name', userName: first8Chars })
+        navigate(`/${roomInfo.roomCode}`);
+      }
     else{
-      dispatch({ type: 'enter_room', roomCode: roomCode })
-      navigate(`/naming`);
+        dispatch({ type: 'set_name', userName: userName })
+        navigate(`/${roomInfo.roomCode}`);
     }
   }; 
 
@@ -31,15 +36,15 @@ const LandingPage = () => {
     <Wrapper>
       <GetUserNameWrapper>
         <UserNameInputBox>
-          <input placeholder="Enter the Room Code" value={roomCode} onChange={handleInputChange}/>
-          <Button onClick={handleButtonClick} >Go!</Button>
+          <input placeholder="Enter your Name" value={userName} onChange={handleInputChange} />
+          <Button onClick={handleButtonClick}>Go!</Button>
         </UserNameInputBox>
       </GetUserNameWrapper>
     </Wrapper>
   );
 };
 
-export default LandingPage;
+export default NamingPage;
 
 const Wrapper = styled.div`
   width: 100%;

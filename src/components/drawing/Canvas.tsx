@@ -56,7 +56,7 @@ const Canvas = ({ user }: props) => {
         socketRef.current.disconnect()
       }
     }
-  }, [])
+  }, [selections])
 
   const drawLine = (originalMousePosition: Coordinate, newMousePosition: Coordinate) => {
     if (!canvasRef.current) {
