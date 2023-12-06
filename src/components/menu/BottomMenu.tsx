@@ -4,8 +4,7 @@ import { MdOutlineScreenShare } from "react-icons/md";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { LuLayoutGrid } from "react-icons/lu";
 import { PiSignOutBold } from "react-icons/pi";
-import { useRoom } from '../../context/RoomContext';
-
+import { useModal } from '../../context/ModalContext';
 
 type props = {
   setFocusScreen: (focusScreen: string) => void;
@@ -13,7 +12,8 @@ type props = {
 
 const BottomMenu = ({ setFocusScreen }: props) => {
   const [showBottomMenu, setShowBottomMenu] = useState(false);
-  const [roomInfo, dispatch] = useRoom();
+  const [showCodeModal, setShowCodeModal] = useState(false)
+  const [modal, dispatchModal] = useModal();
 
   document.addEventListener("mousemove", function (e) {
     var windowHeight = window.innerHeight;
@@ -28,11 +28,16 @@ const BottomMenu = ({ setFocusScreen }: props) => {
 
   if (showBottomMenu) {
     return (
-      <Wrapper>
+      <>
+        <Wrapper>
         <MenuBtn>
           <MdOutlineScreenShare />
         </MenuBtn>
-        <MenuBtn>
+        <MenuBtn
+          onClick={() => {
+            dispatchModal({ type: "modal_clicked"});
+          }}
+        >
           <MdPersonAddAlt1 />
         </MenuBtn>
         <MenuBtn
@@ -46,6 +51,7 @@ const BottomMenu = ({ setFocusScreen }: props) => {
           <PiSignOutBold />
         </MenuBtn>
       </Wrapper>
+      </>
     );
   }
   return <HiddenWrapper>Plz be hidden</HiddenWrapper>;

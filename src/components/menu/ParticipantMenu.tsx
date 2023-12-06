@@ -37,7 +37,7 @@ const ParticipantMenu = ({ selections, handleSelections }: props) => {
                 >
                   <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay />
                 </VideoContainer>
-                <div>{user.name}</div>
+                <UserNameContainer>{user.name}</UserNameContainer>
               </>
             )
           }
@@ -55,7 +55,7 @@ const ParticipantMenu = ({ selections, handleSelections }: props) => {
                   autoPlay
                 />
               </VideoContainer>
-              <div>{user.name}</div>
+              <UserNameContainer>{user.name}</UserNameContainer>
             </>
           )
         })}
@@ -87,7 +87,7 @@ const ParticipantList = styled.div`
 `
 
 const VideoContainer = styled.div`
-  height: 120px;
+  height: 100px;
   width: 180px;
   diplay: flex;
   background-color: transparent;
@@ -95,6 +95,11 @@ const VideoContainer = styled.div`
   justify-content: center;
   text-align: center;
 `
+
+const UserNameContainer = styled.div`
+  text-align: center;
+  font-family: NotoSansLight;
+`;
 
 const Video = styled.video`
   height: 100px;

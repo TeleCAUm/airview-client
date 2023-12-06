@@ -9,9 +9,10 @@ import ParticipantMenu from '../components/menu/ParticipantMenu'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import { useWebRTC } from '../context/WebRTCContext'
 import { DrawingMenuContext } from '../context/DrawingMenuContext'
+import { useModal } from '../context/ModalContext';
+import CodeModal from '../components/menu/CodeModal';
 
 const DisplayPage = () => {
-  const { roomCode } = useParams();
   const { localVideoRef, getLocalStream } = usePeerConnection()
   const [openTgl, setOpenTgl] = useState(false)
   const [focusScreen, setFocusScreen] = useState('')
@@ -19,6 +20,8 @@ const DisplayPage = () => {
   const [selections, setSelections] = useState<string[]>([])
   const { state } = useContext(DrawingMenuContext)
   const { isDrawing, isErasing } = state
+  const [modal, dispatchModal] = useModal();
+
 
   console.log(users.length)
 
@@ -44,6 +47,7 @@ const DisplayPage = () => {
     // local
     return (
       <div>
+        { modal.isOpen && <CodeModal />}
         <MenuWrapper>
           <BottomMenu setFocusScreen={setFocusScreen} />
           <DrawingMenu />
@@ -57,6 +61,7 @@ const DisplayPage = () => {
   if(selections.length === 0){
     return (
       <div>
+        { modal.isOpen && <CodeModal />}
       <MenuWrapper>
         <BottomMenu setFocusScreen={setFocusScreen} />
         <DrawingMenu />
@@ -83,6 +88,7 @@ const DisplayPage = () => {
 
   return (
     <div>
+      { modal.isOpen && <CodeModal />}
       <MenuWrapper>
         <BottomMenu setFocusScreen={setFocusScreen} />
         <DrawingMenu />
