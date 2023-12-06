@@ -1,49 +1,57 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import styled from "styled-components";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../context/RoomContext'
 
-const LandingPage = () => {
-  const [roomCode, setRoomCode] = useState("");
+
+const NamingPage = () => {
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const [roomInfo, dispatch] = useRoom()
 
+  useEffect(() => {
+    if(roomInfo.roomCode === ""){
+      navigate('');
+    }
+  }, [roomInfo.roomCode])
+  
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setRoomCode(e.target.value);
+    setUserName(e.target.value);
   };
 
   const handleButtonClick = () => {
-    if(roomCode === ""){
-      const fullId = uuidv4();
-      const first8Chars = fullId.slice(0, 8);
-      dispatch({ type: 'enter_room', roomCode: first8Chars })
-      navigate(`naming`);
-    }
+    if(userName === ""){
+        const fullId = uuidv4();
+        const first8Chars = fullId.slice(0, 4);
+        dispatch({ type: 'set_name', userName: first8Chars })
+        navigate(`/${roomInfo.roomCode}`);
+      }
     else{
-      dispatch({ type: 'enter_room', roomCode: roomCode })
-      navigate(`/naming`);
+        dispatch({ type: 'set_name', userName: userName })
+        navigate(`/${roomInfo.roomCode}`);
     }
   }; 
 
   return (
     <Wrapper>
       <AirViewLogo>AirView</AirViewLogo>
+      <Description>Room Code : {roomInfo.roomCode}</Description>
       <GetUserNameWrapper>
         <UserNameInputBox>
-          <input placeholder="Enter the Room Code" value={roomCode} onChange={handleInputChange}/>
+          <input placeholder="Enter your Name" value={userName} onChange={handleInputChange} />
           <ButtonWrapper>
-            <Button onClick={handleButtonClick} >Go!</Button>
+            <Button onClick={handleButtonClick} >Enter</Button>
           </ButtonWrapper>
         </UserNameInputBox>
       </GetUserNameWrapper>
-      <Description>Just Press "Go!" to Make a Room !</Description>
     </Wrapper>
   );
 };
 
-export default LandingPage;
+export default NamingPage;
 
 const Wrapper = styled.div`
   display: flex;
@@ -70,7 +78,7 @@ const GetUserNameWrapper = styled.div`
   align-items: center;
   width: 70%;
   gap: 10px;
-  margin: 30px 30px 0px 30px;
+  margin: 0px 30px 0px 30px;
   font-family: NotoSansBold;
 `;
 
@@ -125,6 +133,6 @@ const Description = styled.div`
   text-align: center;
   font-size: 20px;
   padding-right: 50px;
-  color: #c9c9c9; 
+  color: #4f4f4f; 
   font-family: NotoSansRegular;
 `;

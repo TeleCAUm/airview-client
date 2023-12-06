@@ -69,7 +69,7 @@ const ParticipantListContainer = styled.div`
   position: fixed;
   top: 0px;
   right: 0px;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

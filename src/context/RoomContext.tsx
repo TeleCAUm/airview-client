@@ -11,8 +11,8 @@ type Action =
   | { type: "exit_room"; };
 
 const initialState: RoomState = {
-    roomCode: "123456",
-    userName: "userName",
+    roomCode: "",
+    userName: "",
 };
 
 export const RoomContext = createContext<[RoomState, React.Dispatch<Action>]| undefined>(undefined);
@@ -20,6 +20,7 @@ export const RoomContext = createContext<[RoomState, React.Dispatch<Action>]| un
 const roomReducer = (state: RoomState, action: Action) => {
   switch (action.type) {
     case "enter_room":
+        console.log(action.roomCode)
       return { ...state, roomCode: action.roomCode };
     case "set_name":
       return { ...state, userName: action.userName };
