@@ -47,19 +47,6 @@ const DisplayPage = () => {
         <MenuWrapper>
           <BottomMenu setFocusScreen={setFocusScreen} />
           <DrawingMenu />
-          <ToggleWrapper>
-            <ToggleBtn
-              openTgl={openTgl}
-              onClick={() => {
-                setOpenTgl((prevOpenTgl) => !prevOpenTgl)
-              }}
-            >
-              {openTgl ? <IoIosArrowForward /> : <IoIosArrowBack />}
-            </ToggleBtn>
-            {openTgl && (
-              <ParticipantMenu selections={selections} handleSelections={handleSelections} />
-            )}
-          </ToggleWrapper>
         </MenuWrapper>
         <VideoContainer>
           <Video ref={localVideoRef} autoPlay></Video>
