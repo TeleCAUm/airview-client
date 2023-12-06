@@ -4,16 +4,19 @@ import LandingPage from "./pages/LandingPage";
 import NamingPage from "./pages/NamingPage";
 import { WebRTCProvider } from "./context/WebRTCContext";
 import { DrawingMenuProvider } from './context/DrawingMenuContext'
+import { ModalProvider } from "./context/ModalContext";
 
 const router = createBrowserRouter([
   {
     path: "/:roomCode",
     element: (
-      <WebRTCProvider>
+      <ModalProvider>
+        <WebRTCProvider>
           <DrawingMenuProvider>
-          <DisplayPage />
-        </DrawingMenuProvider>
-      </WebRTCProvider>
+            <DisplayPage />
+          </DrawingMenuProvider>
+        </WebRTCProvider>
+      </ModalProvider>
     ),
   },
   {
