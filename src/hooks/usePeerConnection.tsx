@@ -5,18 +5,25 @@ import { useWebRTC } from '../context/WebRTCContext'
 import { useRoom } from '../context/RoomContext'
 
 const pc_config = {
+  // iceServers: [
+  //   // {
+  //   //   urls: 'stun:[STUN_IP]:[PORT]',
+  //   //   'credentials': '[YOR CREDENTIALS]',
+  //   //   'username': '[USERNAME]'
+  //   // },
+  //   {
+  //     urls: 'stun:stun.l.google.com:19302'
+  //   },
+  //   {
+  //     urls: 'TURN:freeturn.net:3478'
+  //   }
+  // ]
   iceServers: [
-    // {
-    //   urls: 'stun:[STUN_IP]:[PORT]',
-    //   'credentials': '[YOR CREDENTIALS]',
-    //   'username': '[USERNAME]'
-    // },
-    {
-      urls: 'stun:stun.l.google.com:19302'
-    }
+    { urls: 'stun:freeturn.net:5349' },
+    { urls: 'turns:freeturn.tel:5349', username: 'free', credential: 'free' }
   ]
 }
-const SOCKET_SERVER_URL = 'http://localhost:3333'
+const SOCKET_SERVER_URL = 'http://3.36.70.227:3333'
 
 export const usePeerConnection = () => {
   const socketRef = useRef<Socket>()
