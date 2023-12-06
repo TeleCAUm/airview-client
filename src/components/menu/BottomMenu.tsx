@@ -4,6 +4,8 @@ import { MdOutlineScreenShare } from "react-icons/md";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { LuLayoutGrid } from "react-icons/lu";
 import { PiSignOutBold } from "react-icons/pi";
+import { useRoom } from '../../context/RoomContext';
+
 
 type props = {
   setFocusScreen: (focusScreen: string) => void;
@@ -11,6 +13,7 @@ type props = {
 
 const BottomMenu = ({ setFocusScreen }: props) => {
   const [showBottomMenu, setShowBottomMenu] = useState(false);
+  const [roomInfo, dispatch] = useRoom();
 
   document.addEventListener("mousemove", function (e) {
     var windowHeight = window.innerHeight;
