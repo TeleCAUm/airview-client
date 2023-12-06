@@ -100,7 +100,7 @@ const MenuBtn = styled.button<MenuBtnProps>`
   height: 40px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  background-color: ${({ isActive }) => (isActive ? '#ececec' : 'transparent')};
+  background-color: rgb(239, 239, 239);
   box-shadow: ${({ isActive }) => (isActive ? 'inset 0 2px 4px rgba(0, 0, 0, 0.1)' : 'none')};
   cursor: pointer;
   margin: 10px;
