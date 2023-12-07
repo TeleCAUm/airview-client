@@ -139,7 +139,8 @@ const Canvas = ({ user }: props) => {
         height: canvas.height,
         line: drawnLines,
         color: color,
-        thickness: thickness
+        thickness: thickness,
+        id: user.id
       })
       console.log(data)
       console.log(socketRef.current)
