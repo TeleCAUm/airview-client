@@ -137,9 +137,12 @@ const Canvas = ({ user }: props) => {
       const data = JSON.stringify({
         width: canvas.width,
         height: canvas.height,
-        line: drawnLines
+        line: drawnLines,
+        color: color,
+        thickness: thickness
       })
       console.log(data)
+      console.log(socketRef.current)
       socketRef.current?.emit('send', data)
       setDrawnLines([])
     }
