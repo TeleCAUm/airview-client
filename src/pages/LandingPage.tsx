@@ -19,7 +19,7 @@ const LandingPage = () => {
       const fullId = uuidv4();
       const first8Chars = fullId.slice(0, 8);
       dispatch({ type: 'enter_room', roomCode: first8Chars })
-      navigate(`naming`);
+      navigate(`/naming`);
     }
     else{
       dispatch({ type: 'enter_room', roomCode: roomCode })

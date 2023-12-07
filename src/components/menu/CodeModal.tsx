@@ -8,18 +8,17 @@ const CodeModal = () => {
     const [roomInfo, dispatch] = useRoom();
     const [modal, dispatchModal] = useModal();
 
-    console.log('abc');
     return (
         <ModalSection>
-        <ModalStyle>
-            <Description>Room Code:</Description>
-            <div className='code'>{roomInfo.roomCode}</div>
-            <Description>Paste the Code to Invite People</Description>
-			<ButtonWrapper>
-				<CloseBtn onClick={() => dispatchModal({type:"modal_close"})}>Close</CloseBtn>
-			</ButtonWrapper>
-        </ModalStyle>
-    </ModalSection>
+            <ModalStyle>
+                <Description>Room Code:</Description>
+                <div className='code'>{roomInfo.roomCode}</div>
+                <Description>Paste the Code to Invite People</Description>
+			    <ButtonWrapper>
+				    <CloseBtn onClick={() => dispatchModal({type:"modal_close"})}>Close</CloseBtn>
+			    </ButtonWrapper>
+            </ModalStyle>
+        </ModalSection>
     );
 }
 
