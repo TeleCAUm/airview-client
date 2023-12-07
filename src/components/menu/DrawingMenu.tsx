@@ -47,7 +47,7 @@ const DrawingMenu = () => {
           setColor={(color) => dispatch({ type: 'SET_COLOR', payload: color })}
         />
         <StrokeSliderWrapper>
-          <span>선 굵기</span>
+          <span>Stroke</span>
           <input type="range" min="1" max="10" value={thickness} onChange={handleThicknessChange} />
         </StrokeSliderWrapper>
         <MenuBtn isActive={false}>

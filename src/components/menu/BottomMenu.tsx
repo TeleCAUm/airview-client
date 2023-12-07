@@ -5,6 +5,7 @@ import { MdPersonAddAlt1 } from "react-icons/md";
 import { LuLayoutGrid } from "react-icons/lu";
 import { PiSignOutBold } from "react-icons/pi";
 import { useModal } from '../../context/ModalContext';
+import { useNavigate } from 'react-router-dom';
 
 type props = {
   setFocusScreen: (focusScreen: string) => void;
@@ -14,6 +15,7 @@ const BottomMenu = ({ setFocusScreen }: props) => {
   const [showBottomMenu, setShowBottomMenu] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false)
   const [modal, dispatchModal] = useModal();
+  const navigate = useNavigate();
 
   document.addEventListener("mousemove", function (e) {
     var windowHeight = window.innerHeight;
@@ -47,7 +49,11 @@ const BottomMenu = ({ setFocusScreen }: props) => {
         >
           <LuLayoutGrid />
         </MenuBtn>
-        <MenuBtn>
+        <MenuBtn
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           <PiSignOutBold />
         </MenuBtn>
       </Wrapper>
