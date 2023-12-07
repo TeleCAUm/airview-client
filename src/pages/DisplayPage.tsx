@@ -10,6 +10,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import { useWebRTC } from '../context/WebRTCContext'
 import { DrawingMenuContext } from '../context/DrawingMenuContext'
 import { useModal } from '../context/ModalContext';
+import { useRoom } from '../context/RoomContext'
 import CodeModal from '../components/menu/CodeModal';
 
 const DisplayPage = () => {
@@ -21,9 +22,13 @@ const DisplayPage = () => {
   const { state } = useContext(DrawingMenuContext)
   const { isDrawing, isErasing } = state
   const [modal, dispatchModal] = useModal();
-
+  const { roomCode } = useParams();
+  const [roomInfo, dispatchRoom] = useRoom();
 
   console.log(users.length)
+  if(roomInfo.roomCode === ""){
+    // dispatchRoom({type:"enter_by_link", roomCode: roomCode as string})
+  }
 
   const handleFocus = (id: string) => {
     if (isDrawing || isErasing) return
@@ -46,7 +51,7 @@ const DisplayPage = () => {
   if (users.length === 0) {
     // local
     return (
-      <div>
+      <>
         { modal.isOpen && <CodeModal />}
         <MenuWrapper>
           <BottomMenu setFocusScreen={setFocusScreen} />
@@ -55,12 +60,12 @@ const DisplayPage = () => {
         <VideoContainer>
           <Video ref={localVideoRef} autoPlay></Video>
         </VideoContainer>
-      </div>
+      </>
     )
   }
   if(selections.length === 0){
     return (
-      <div>
+      <>
         { modal.isOpen && <CodeModal />}
       <MenuWrapper>
         <BottomMenu setFocusScreen={setFocusScreen} />
@@ -79,15 +84,15 @@ const DisplayPage = () => {
           )}
         </ToggleWrapper>
       </MenuWrapper>
-      <VideoContainer>
-          <Video ref={localVideoRef} autoPlay></Video>
-      </VideoContainer>
-    </div>
+      <TextContainer>
+        Select the Screens from the Toggle on the Right
+      </TextContainer>
+    </>
     );
   }
-
+  
   return (
-    <div>
+    <>
       { modal.isOpen && <CodeModal />}
       <MenuWrapper>
         <BottomMenu setFocusScreen={setFocusScreen} />
@@ -107,7 +112,7 @@ const DisplayPage = () => {
         </ToggleWrapper>
       </MenuWrapper>
       <DisplayScreen focusScreen={focusScreen} handleFocus={handleFocus} selections={selections} />
-    </div>
+    </>
   )
 }
 
@@ -142,6 +147,20 @@ const ToggleBtn = styled.button<{ openTgl: boolean }>`
   cursor: pointer;
   z-index: 100;
 `
+
+const TextContainer = styled.div` 
+  width: 100vw;
+  height: 100vh;
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: NotoSansBlack;
+  color: #4f4f4f;
+  font-size: 3vw;
+  top: 50%;
+`;
 
 const VideoContainer = styled.div`
   width: 100vw;

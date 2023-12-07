@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 type RoomState = {
     roomCode: string
@@ -8,6 +9,7 @@ type RoomState = {
 type Action = 
   | { type: "enter_room"; roomCode: string }
   | { type: "set_name"; userName: string }
+  | { type: "enter_by_link"; roomCode: string}
   | { type: "exit_room"; };
 
 const initialState: RoomState = {
@@ -24,6 +26,9 @@ const roomReducer = (state: RoomState, action: Action) => {
       return { ...state, roomCode: action.roomCode };
     case "set_name":
       return { ...state, userName: action.userName };
+    case "enter_by_link":
+      const userName = uuidv4().slice(0, 4)
+      return { roomCode: action.roomCode, userName:userName  };
     case "exit_room":
         return { roomCode: "", userName: "" };
     default:

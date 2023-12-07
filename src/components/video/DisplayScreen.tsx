@@ -63,9 +63,8 @@ const DisplayScreen = ({ focusScreen, handleFocus, selections }: props) => {
         })}
       </Container>
     )
-    
   }
-
+  
   return (
     // tile view
     <GridContainer columns={columns} rows={rows}>
