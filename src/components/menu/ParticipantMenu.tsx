@@ -1,26 +1,26 @@
-import React, { useEffect, useRef } from 'react'
-import styled from 'styled-components'
-import { useWebRTC } from '../../context/WebRTCContext'
+import React, { useEffect, useRef } from "react";
+import styled from "styled-components";
+import { useWebRTC } from "../../context/WebRTCContext";
 
 type props = {
-  selections: string[]
-  handleSelections: (id: string) => void
-}
+  selections: string[];
+  handleSelections: (id: string) => void;
+};
 
 const ParticipantMenu = ({ selections, handleSelections }: props) => {
-  const [users, dispatch] = useWebRTC()
-  const refs = useRef<(HTMLVideoElement | null)[]>([])
+  const [users, dispatch] = useWebRTC();
+  const refs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
-    refs.current = refs.current.slice(0, users.length)
-  }, [users])
+    refs.current = refs.current.slice(0, users.length);
+  }, [users]);
 
   useEffect(() => {
     users.forEach((user, idx) => {
-      const ref = refs.current[idx]
-      if (ref) ref.srcObject = user.stream
-    })
-  }, [users])
+      const ref = refs.current[idx];
+      if (ref) ref.srcObject = user.stream;
+    });
+  }, [users]);
 
   return (
     <ParticipantListContainer>
@@ -32,38 +32,38 @@ const ParticipantMenu = ({ selections, handleSelections }: props) => {
                 <VideoContainer
                   key={user.id}
                   onClick={() => {
-                    handleSelections(user.id)
+                    handleSelections(user.id);
                   }}
                 >
                   <Video ref={(ref) => (refs.current[idx] = ref)} autoPlay />
                 </VideoContainer>
                 <UserNameContainer>{user.name}</UserNameContainer>
               </>
-            )
+            );
           }
           return (
             <>
               <VideoContainer
                 key={user.id}
                 onClick={() => {
-                  handleSelections(user.id)
+                  handleSelections(user.id);
                 }}
               >
                 <Video
                   ref={(ref) => (refs.current[idx] = ref)}
-                  style={{ filter: 'brightness(0.5)' }}
+                  style={{ filter: "brightness(0.5)" }}
                   autoPlay
                 />
               </VideoContainer>
               <UserNameContainer>{user.name}</UserNameContainer>
             </>
-          )
+          );
         })}
       </ParticipantList>
     </ParticipantListContainer>
-  )
-}
-export default ParticipantMenu
+  );
+};
+export default ParticipantMenu;
 
 const ParticipantListContainer = styled.div`
   position: fixed;
@@ -76,7 +76,7 @@ const ParticipantListContainer = styled.div`
   background-color: rgba(200, 200, 200, 0.609);
   overflow-y: scroll;
   z-index: 100;
-`
+`;
 
 const ParticipantList = styled.div`
   max-height: 100%;
@@ -84,7 +84,7 @@ const ParticipantList = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-`
+`;
 
 const VideoContainer = styled.div`
   height: 100px;
@@ -94,7 +94,7 @@ const VideoContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   text-align: center;
-`
+`;
 
 const UserNameContainer = styled.div`
   text-align: center;
@@ -109,4 +109,4 @@ const Video = styled.video`
   cursor: pointer;
   background-color: rgb(82, 82, 82);
   flex-shrink: 0;
-`
+`;

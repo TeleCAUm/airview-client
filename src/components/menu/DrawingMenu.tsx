@@ -1,37 +1,37 @@
-import React, { useState, useContext } from 'react'
-import styled from 'styled-components'
-import ColorPick from './ColorPick'
-import { FaRegPenToSquare } from 'react-icons/fa6'
-import { LuEraser } from 'react-icons/lu'
-import { MdOutlineCancelPresentation } from 'react-icons/md'
-import { DrawingMenuContext } from '../../context/DrawingMenuContext'
+import React, { useState, useContext } from "react";
+import styled from "styled-components";
+import ColorPick from "./ColorPick";
+import { FaRegPenToSquare } from "react-icons/fa6";
+import { LuEraser } from "react-icons/lu";
+import { MdOutlineCancelPresentation } from "react-icons/md";
+import { DrawingMenuContext } from "../../context/DrawingMenuContext";
 
 const DrawingMenu = () => {
-  const [showDrawingMenu, setShowDrawingMenu] = useState(false)
-  const { state, dispatch } = useContext(DrawingMenuContext)
-  const { color, thickness } = state // Get color and thickness from context
+  const [showDrawingMenu, setShowDrawingMenu] = useState(false);
+  const { state, dispatch } = useContext(DrawingMenuContext);
+  const { color, thickness } = state; // Get color and thickness from context
 
   const toggleDrawing = () => {
-    dispatch({ type: 'TOGGLE_DRAWING' })
-  }
+    dispatch({ type: "TOGGLE_DRAWING" });
+  };
 
   const toggleErasing = () => {
-    dispatch({ type: 'TOGGLE_ERASING' })
-  }
+    dispatch({ type: "TOGGLE_ERASING" });
+  };
 
-  document.addEventListener('mousemove', function (e) {
-    var mouseY = e.clientY
+  document.addEventListener("mousemove", function (e) {
+    var mouseY = e.clientY;
 
     if (mouseY < 80) {
-      setShowDrawingMenu(true)
+      setShowDrawingMenu(true);
     } else {
-      setShowDrawingMenu(false)
+      setShowDrawingMenu(false);
     }
-  })
+  });
 
   const handleThicknessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: 'SET_THICKNESS', payload: Number(e.target.value) })
-  }
+    dispatch({ type: "SET_THICKNESS", payload: Number(e.target.value) });
+  };
 
   if (showDrawingMenu) {
     return (
@@ -44,22 +44,28 @@ const DrawingMenu = () => {
         </MenuBtn>
         <ColorPick
           color={color}
-          setColor={(color) => dispatch({ type: 'SET_COLOR', payload: color })}
+          setColor={(color) => dispatch({ type: "SET_COLOR", payload: color })}
         />
         <StrokeSliderWrapper>
           <span>Stroke</span>
-          <input type="range" min="1" max="10" value={thickness} onChange={handleThicknessChange} />
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={thickness}
+            onChange={handleThicknessChange}
+          />
         </StrokeSliderWrapper>
         <MenuBtn isActive={false}>
           <MdOutlineCancelPresentation />
         </MenuBtn>
       </Wrapper>
-    )
+    );
   }
-  return <HiddenWrapper>Plz be hidden</HiddenWrapper>
-}
+  return <HiddenWrapper>Plz be hidden</HiddenWrapper>;
+};
 
-export default DrawingMenu
+export default DrawingMenu;
 
 // ... (rest of your styled components)
 
@@ -68,7 +74,7 @@ const HiddenWrapper = styled.div`
   top: -100px;
   width: 100%;
   transition: top 0.5s;
-`
+`;
 
 const Wrapper = styled.div`
   position: fixed;
@@ -86,11 +92,11 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
   z-index: 100;
-`
+`;
 
 type MenuBtnProps = {
-  isActive: boolean
-}
+  isActive: boolean;
+};
 
 const MenuBtn = styled.button<MenuBtnProps>`
   display: flex;
@@ -101,7 +107,8 @@ const MenuBtn = styled.button<MenuBtnProps>`
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: rgb(239, 239, 239);
-  box-shadow: ${({ isActive }) => (isActive ? 'inset 0 2px 4px rgba(0, 0, 0, 0.1)' : 'none')};
+  box-shadow: ${({ isActive }) =>
+    isActive ? "inset 0 2px 4px rgba(0, 0, 0, 0.1)" : "none"};
   cursor: pointer;
   margin: 10px;
   svg {
@@ -110,7 +117,7 @@ const MenuBtn = styled.button<MenuBtnProps>`
   &:hover {
     background-color: #ececec; // Hover color same as active color
   }
-`
+`;
 
 const StrokeSliderWrapper = styled.div`
   display: flex;
@@ -133,4 +140,4 @@ const StrokeSliderWrapper = styled.div`
   input {
     width: 150px;
   }
-`
+`;

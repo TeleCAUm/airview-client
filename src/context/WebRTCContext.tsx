@@ -14,7 +14,7 @@ const webRTCReducer = (users: WebRTCUser[], action: Action) => {
     case "add_conn":
       return [...users, action.user];
     case "remove_conn":
-      return users.filter((user) => user.id !== action.id)
+      return users.filter((user) => user.id !== action.id);
     default:
       throw new Error("Unhandled action");
   }

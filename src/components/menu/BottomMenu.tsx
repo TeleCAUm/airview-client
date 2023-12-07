@@ -4,8 +4,8 @@ import { MdOutlineScreenShare } from "react-icons/md";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { LuLayoutGrid } from "react-icons/lu";
 import { PiSignOutBold } from "react-icons/pi";
-import { useModal } from '../../context/ModalContext';
-import { useNavigate } from 'react-router-dom';
+import { useModal } from "../../context/ModalContext";
+import { useNavigate } from "react-router-dom";
 
 type props = {
   setFocusScreen: (focusScreen: string) => void;
@@ -13,7 +13,7 @@ type props = {
 
 const BottomMenu = ({ setFocusScreen }: props) => {
   const [showBottomMenu, setShowBottomMenu] = useState(false);
-  const [showCodeModal, setShowCodeModal] = useState(false)
+  const [showCodeModal, setShowCodeModal] = useState(false);
   const [modal, dispatchModal] = useModal();
   const navigate = useNavigate();
 
@@ -32,31 +32,31 @@ const BottomMenu = ({ setFocusScreen }: props) => {
     return (
       <>
         <Wrapper>
-        <MenuBtn>
-          <MdOutlineScreenShare />
-        </MenuBtn>
-        <MenuBtn
-          onClick={() => {
-            dispatchModal({ type: "modal_clicked"});
-          }}
-        >
-          <MdPersonAddAlt1 />
-        </MenuBtn>
-        <MenuBtn
-          onClick={() => {
-            setFocusScreen("");
-          }}
-        >
-          <LuLayoutGrid />
-        </MenuBtn>
-        <MenuBtn
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          <PiSignOutBold />
-        </MenuBtn>
-      </Wrapper>
+          <MenuBtn>
+            <MdOutlineScreenShare />
+          </MenuBtn>
+          <MenuBtn
+            onClick={() => {
+              dispatchModal({ type: "modal_clicked" });
+            }}
+          >
+            <MdPersonAddAlt1 />
+          </MenuBtn>
+          <MenuBtn
+            onClick={() => {
+              setFocusScreen("");
+            }}
+          >
+            <LuLayoutGrid />
+          </MenuBtn>
+          <MenuBtn
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <PiSignOutBold />
+          </MenuBtn>
+        </Wrapper>
       </>
     );
   }

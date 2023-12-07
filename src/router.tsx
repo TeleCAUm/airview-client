@@ -3,7 +3,7 @@ import DisplayPage from "./pages/DisplayPage";
 import LandingPage from "./pages/LandingPage";
 import NamingPage from "./pages/NamingPage";
 import { WebRTCProvider } from "./context/WebRTCContext";
-import { DrawingMenuProvider } from './context/DrawingMenuContext'
+import { DrawingMenuProvider } from "./context/DrawingMenuContext";
 import { ModalProvider } from "./context/ModalContext";
 
 const router = createBrowserRouter([
@@ -27,7 +27,6 @@ const router = createBrowserRouter([
     path: "/naming",
     element: <NamingPage />,
   },
-  
 ]);
 
 export default router;

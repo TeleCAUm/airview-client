@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
-import { useRoom } from '../context/RoomContext'
-
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
+import { useRoom } from "../context/RoomContext";
 
 const NamingPage = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-  const [roomInfo, dispatch] = useRoom()
+  const [roomInfo, dispatch] = useRoom();
 
   useEffect(() => {
-    if(roomInfo.roomCode === ""){
-      navigate('');
+    if (roomInfo.roomCode === "") {
+      navigate("");
     }
-  }, [roomInfo.roomCode])
-  
+  }, [roomInfo.roomCode]);
 
-  const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleInputChange = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setUserName(e.target.value);
   };
 
   const handleButtonClick = () => {
-    if(userName === ""){
-        const fullId = uuidv4();
-        const first8Chars = fullId.slice(0, 4);
-        dispatch({ type: 'set_name', userName: first8Chars })
-        navigate(`/${roomInfo.roomCode}`);
-      }
-    else{
-        dispatch({ type: 'set_name', userName: userName })
-        navigate(`/${roomInfo.roomCode}`);
+    if (userName === "") {
+      const fullId = uuidv4();
+      const first8Chars = fullId.slice(0, 4);
+      dispatch({ type: "set_name", userName: first8Chars });
+      navigate(`/${roomInfo.roomCode}`);
+    } else {
+      dispatch({ type: "set_name", userName: userName });
+      navigate(`/${roomInfo.roomCode}`);
     }
-  }; 
+  };
 
   return (
     <Wrapper>
@@ -41,9 +40,13 @@ const NamingPage = () => {
       <Description>Room Code : {roomInfo.roomCode}</Description>
       <GetUserNameWrapper>
         <UserNameInputBox>
-          <input placeholder="Enter your Name" value={userName} onChange={handleInputChange} />
+          <input
+            placeholder="Enter your Name"
+            value={userName}
+            onChange={handleInputChange}
+          />
           <ButtonWrapper>
-            <Button onClick={handleButtonClick} >Enter</Button>
+            <Button onClick={handleButtonClick}>Enter</Button>
           </ButtonWrapper>
         </UserNameInputBox>
       </GetUserNameWrapper>
@@ -71,7 +74,6 @@ const AirViewLogo = styled.div`
   font-size: 15vh;
 `;
 
-
 const GetUserNameWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -88,14 +90,14 @@ const UserNameInputBox = styled.div`
   background-color: white;
   border-radius: 20px;
   padding: 10px 10px 10px 5px;
-  
+
   & > input {
     width: 100%;
     border-top: none;
     border-left: none;
     border-right: none;
     border-bottom: 3px solid black;
-    margin : 20px 20px 10px 20px;
+    margin: 20px 20px 10px 20px;
     padding: 10px 10px 10px 5px;
     font-size: 20px;
     font-family: NotoSansRegular;
@@ -125,7 +127,7 @@ const Button = styled.div`
   cursor: pointer;
   &:hover {
     background-color: white;
-    color: #c9c9c9; 
+    color: #c9c9c9;
   }
 `;
 
@@ -133,6 +135,6 @@ const Description = styled.div`
   text-align: center;
   font-size: 20px;
   padding-right: 50px;
-  color: #4f4f4f; 
+  color: #4f4f4f;
   font-family: NotoSansRegular;
 `;

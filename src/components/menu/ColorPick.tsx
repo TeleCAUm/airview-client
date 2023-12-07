@@ -1,20 +1,28 @@
-import React, { useState, useContext } from 'react'
-import styled from 'styled-components'
-import { DrawingMenuContext } from '../../context/DrawingMenuContext'
+import React, { useState, useContext } from "react";
+import styled from "styled-components";
+import { DrawingMenuContext } from "../../context/DrawingMenuContext";
 
 type ColorPickProps = {
-  color: string
-  setColor: (color: string) => void
-}
+  color: string;
+  setColor: (color: string) => void;
+};
 
 const ColorPick: React.FC<ColorPickProps> = ({ color, setColor }) => {
-  const { state, dispatch } = useContext(DrawingMenuContext)
+  const { state, dispatch } = useContext(DrawingMenuContext);
 
-  const colors = ['#000000', '#FF8B8B', '#FFCA8B', '#FFEC8B', '#D3FF8B', '#9BFF8B', '#8BFFCE']
+  const colors = [
+    "#000000",
+    "#FF8B8B",
+    "#FFCA8B",
+    "#FFEC8B",
+    "#D3FF8B",
+    "#9BFF8B",
+    "#8BFFCE",
+  ];
 
   const onChangeCheck = (color: string) => {
-    dispatch({ type: 'SET_COLOR', payload: color })
-  }
+    dispatch({ type: "SET_COLOR", payload: color });
+  };
 
   return (
     <Wrapper>
@@ -26,12 +34,15 @@ const ColorPick: React.FC<ColorPickProps> = ({ color, setColor }) => {
             onChange={() => onChangeCheck(color)}
             checked={state.color === color}
           />
-          <Circle className="checkbox_color" style={{ backgroundColor: color }}></Circle>
+          <Circle
+            className="checkbox_color"
+            style={{ backgroundColor: color }}
+          ></Circle>
         </label>
       ))}
     </Wrapper>
-  )
-}
+  );
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,12 +62,12 @@ const Wrapper = styled.div`
     border: 3px solid #ffffff;
     box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.12);
   }
-`
+`;
 
 const Circle = styled.div`
   width: 1.8rem;
   height: 1.8rem;
   border-radius: 1rem;
-`
+`;
 
-export default ColorPick
+export default ColorPick;
