@@ -23,7 +23,7 @@ const pc_config = {
     { urls: 'turns:freeturn.tel:5349', username: 'free', credential: 'free' }
   ]
 }
-const SOCKET_SERVER_URL = 'http://3.36.70.227:3333'
+const SOCKET_SERVER_URL = 'https://3.36.70.227:3333'
 
 export const usePeerConnection = () => {
   const socketRef = useRef<Socket>()

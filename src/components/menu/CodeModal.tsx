@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import { useRoom } from '../../context/RoomContext';
 import { useModal } from '../../context/ModalContext';
+import { MdContentCopy } from "react-icons/md";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 
 const CodeModal = () => {
@@ -12,7 +14,9 @@ const CodeModal = () => {
         <ModalSection>
             <ModalStyle>
                 <Description>Room Code:</Description>
-                <div className='code'>{roomInfo.roomCode}</div>
+                <CopyToClipboard text={roomInfo.roomCode} onCopy={() => dispatchModal({type:"modal_close"})}>
+                    <div className='code'>{roomInfo.roomCode}  <MdContentCopy /></div>         
+                </CopyToClipboard>
                 <Description>Paste the Code to Invite People</Description>
 			    <ButtonWrapper>
 				    <CloseBtn onClick={() => dispatchModal({type:"modal_close"})}>Close</CloseBtn>
@@ -52,6 +56,7 @@ const ModalStyle = styled.div`
 	& >.code{
         font-size: 30px;
 		font-family: NotoSansExtraBold;
+        cursor: pointer;
 	}
 `;
 
