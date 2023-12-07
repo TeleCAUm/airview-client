@@ -42,7 +42,7 @@ const Canvas = ({ user }: props) => {
 
     // Initialize socket only if it's not already established
     if (!socketRef.current) {
-      socketRef.current = io(`${user.ipAddress}:55555`)
+      socketRef.current = io(`${user.ipAddress}:5555`)
     }
 
     socketRef.current.on('connect', () => {
@@ -121,6 +121,8 @@ const Canvas = ({ user }: props) => {
           } else if (mousePosition) {
             drawLine(mousePosition, newMousePosition)
             setMousePosition(newMousePosition)
+
+            setDrawnLines((prevLines) => [...prevLines, newMousePosition])
           }
         }
       }
