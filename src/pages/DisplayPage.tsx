@@ -47,6 +47,14 @@ const DisplayPage = () => {
       setSelections(selections.filter((item) => item !== id));
     }
   };
+
+  useEffect(() => {
+    const validSelections = selections.filter(selectionId => users.some(user => user.id === selectionId));
+    if (validSelections.length !== selections.length) {
+      setSelections(validSelections);
+    }
+  }, [users, selections]);
+
   console.log(selections.length);
 
   if (users.length === 0) {
