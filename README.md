@@ -1,4 +1,4 @@
-![image](https://github.com/TeleCAUm/airview-client/assets/83288181/e7c2deff-39dc-40ef-973f-2cff3d064a61)
+![readme-img1](https://github.com/TeleCAUm/.github/assets/138296318/f8484149-f947-47f1-bd87-39d12f89f115)
 <br/><br/>
 
 # Screen Sharing Platform
@@ -8,9 +8,9 @@
 AirView is a screen-sharing platform that supports the following features.
 
 
-- **Screen Sharing**: View work on each other's devices without the need for a monitor or transmission process.
-- **Quick Screen Switching**: Switch screens ridply when you want to see multiple users' screens at a glance or focus on one selected screen.
-- **Drawing**: Draw on the screens when you want to provide feedback.
+- __Screen Sharing__: View work on each other's devices without the need for a monitor or transmission process.
+- __Quick Screen Switching__: Switch screens ridply when you want to see multiple users' screens at a glance or focus on one selected screen.
+- __Drawing__: Draw on the screens when you want to provide feedback.
 <br/>
 
 ---
