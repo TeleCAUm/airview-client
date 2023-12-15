@@ -1,5 +1,4 @@
-![readme-img1](https://github.com/TeleCAUm/.github/assets/138296318/f8484149-f947-47f1-bd87-39d12f89f115)
-<br/><br/>
+![image](https://github.com/TeleCAUm/airview-client/assets/83288181/7d4a9124-add6-461f-87e2-4114ec14fa07)<br/><br/>
 
 # Screen Sharing Platform
     💡 A service where you collaboratively draw pictures on each other's screens
