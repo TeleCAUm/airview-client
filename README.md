@@ -26,14 +26,14 @@ All users perform the following:
 
 ### 2) Open Source
 
-Through the open-source version, AirView can be used without an internet connection.<br/>
+If you use the open-source version, AirView can be used without an internet connection.<br/>
 Please refer to the [signaling-server](https://github.com/TeleCAUm/signaling-server)
 <br/><br/>
 
 
 ## Drawing
 
-Through Airview-board, you can draw on your screen and share feedback.<br/>
+If you use the Airview-board, you can draw on your screen and share feedback.<br/>
 Please refer to the [airview-board](https://github.com/TeleCAUm/airview-board)
 <br/><br/>
 
