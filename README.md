@@ -1,8 +1,9 @@
-![image](https://github.com/TeleCAUm/airview-client/assets/83288181/7d4a9124-add6-461f-87e2-4114ec14fa07)<br/><br/>
-
 # Screen Sharing Platform
     💡 A service where you collaboratively draw pictures on each other's screens
 
+<div align="center">
+  <img src="https://github.com/TeleCAUm/.github/assets/25452313/913f17ae-c5ef-4791-823f-3c100480f267" alt="Mar-27-2024 11-45-26">
+</div>
 
 AirView is a screen-sharing platform that supports the following features.
 
